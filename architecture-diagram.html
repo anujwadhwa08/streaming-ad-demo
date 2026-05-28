@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agentic CTV Ad Platform — Architecture</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #05080d; --panel: #0a0e17; --border: #1a2235;
+    --green: #22c55e; --blue: #60a5fa; --purple: #a78bfa;
+    --amber: #f59e0b; --teal: #2dd4bf; --coral: #f97316;
+    --pink: #f472b6; --text: #e2e8f0; --muted: #6b7280;
+  }
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+    min-height: 100vh; padding: 40px 48px;
+  }
+
+  /* ── Header ── */
+  .header { text-align: center; margin-bottom: 56px; }
+  .header-tag {
+    display: inline-block; background: rgba(34,197,94,0.1);
+    border: 1px solid rgba(34,197,94,0.3); color: var(--green);
+    font-size: 10px; font-weight: 700; letter-spacing: 2.5px;
+    text-transform: uppercase; padding: 5px 16px; border-radius: 99px; margin-bottom: 18px;
+  }
+  .header h1 {
+    font-size: 32px; font-weight: 800; letter-spacing: -0.5px;
+    color: #fff; margin-bottom: 10px; font-family: -apple-system, 'SF Pro Display', sans-serif;
+  }
+  .header h1 span { color: var(--green); }
+  .header p {
+    font-size: 14px; color: var(--muted); max-width: 580px;
+    margin: 0 auto; line-height: 1.7; font-family: -apple-system, sans-serif;
+  }
+
+  /* ── Section labels ── */
+  .section-label {
+    font-size: 9px; font-weight: 700; letter-spacing: 2.5px;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 14px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  /* ── PRODUCT FLOW ── */
+  .product-flow {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 14px; padding: 32px 36px; margin-bottom: 28px;
+  }
+
+  .flow-row {
+    display: flex; align-items: stretch; gap: 0;
+    position: relative;
+  }
+
+  .flow-step {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; position: relative; z-index: 1;
+  }
+
+  .flow-connector {
+    width: 36px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    position: relative; padding-top: 24px;
+  }
+  .flow-connector::before {
+    content: ''; position: absolute; top: 38px; left: 50%;
+    transform: translateX(-50%);
+    width: 36px; height: 2px;
+    background: linear-gradient(90deg, var(--border), var(--border));
+  }
+  .flow-connector .arrow {
+    font-size: 12px; color: var(--muted); position: relative; z-index: 2;
+  }
+
+  .step-icon {
+    width: 52px; height: 52px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; margin-bottom: 10px;
+    border: 1px solid; position: relative;
+  }
+  .step-icon .step-num {
+    position: absolute; top: -8px; right: -8px;
+    width: 18px; height: 18px; border-radius: 50%;
+    background: var(--bg); border: 1px solid var(--border);
+    font-size: 9px; font-weight: 700; display: flex;
+    align-items: center; justify-content: center; color: var(--muted);
+  }
+
+  .step-icon.s-amber  { background: rgba(245,158,11,0.1);  border-color: rgba(245,158,11,0.3); }
+  .step-icon.s-blue   { background: rgba(96,165,250,0.1);  border-color: rgba(96,165,250,0.3); }
+  .step-icon.s-green  { background: rgba(34,197,94,0.1);   border-color: rgba(34,197,94,0.3); }
+  .step-icon.s-purple { background: rgba(167,139,250,0.1); border-color: rgba(167,139,250,0.3); }
+  .step-icon.s-teal   { background: rgba(45,212,191,0.1);  border-color: rgba(45,212,191,0.3); }
+  .step-icon.s-coral  { background: rgba(249,115,22,0.1);  border-color: rgba(249,115,22,0.3); }
+  .step-icon.s-pink   { background: rgba(244,114,182,0.1); border-color: rgba(244,114,182,0.3); }
+
+  .step-name {
+    font-size: 11px; font-weight: 700; color: #fff;
+    text-align: center; margin-bottom: 4px; letter-spacing: 0.2px;
+  }
+  .step-sub {
+    font-size: 9px; color: var(--muted); text-align: center;
+    line-height: 1.5; max-width: 90px;
+    font-family: -apple-system, sans-serif;
+  }
+
+  .step-badge {
+    margin-top: 8px; display: inline-flex; align-items: center;
+    gap: 4px; padding: 2px 8px; border-radius: 99px;
+    font-size: 8px; font-weight: 700; letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .badge-det  { background: rgba(96,165,250,0.12); color: var(--blue);   border: 1px solid rgba(96,165,250,0.25); }
+  .badge-ai   { background: rgba(167,139,250,0.12); color: var(--purple); border: 1px solid rgba(167,139,250,0.25); }
+  .badge-prot { background: rgba(245,158,11,0.12); color: var(--amber);  border: 1px solid rgba(245,158,11,0.25); }
+  .badge-iab  { background: rgba(45,212,191,0.12); color: var(--teal);   border: 1px solid rgba(45,212,191,0.25); }
+
+  /* ── TECH ARCHITECTURE ── */
+  .arch-grid {
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px; margin-bottom: 28px;
+  }
+  .arch-col { display: flex; flex-direction: column; gap: 16px; }
+  .arch-col-label {
+    font-size: 9px; font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--muted); text-align: center;
+    padding: 6px; border-radius: 6px; background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border); margin-bottom: 2px;
+  }
+
+  .arch-card {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 10px; padding: 16px 18px;
+    border-top: 3px solid;
+  }
+  .arch-card.c-green  { border-top-color: var(--green); }
+  .arch-card.c-blue   { border-top-color: var(--blue); }
+  .arch-card.c-purple { border-top-color: var(--purple); }
+  .arch-card.c-amber  { border-top-color: var(--amber); }
+  .arch-card.c-teal   { border-top-color: var(--teal); }
+  .arch-card.c-coral  { border-top-color: var(--coral); }
+  .arch-card.c-pink   { border-top-color: var(--pink); }
+
+  .arch-card-title {
+    font-size: 11px; font-weight: 700; color: #fff;
+    margin-bottom: 6px; display: flex; align-items: center; gap: 6px;
+  }
+  .arch-card-title .icon { font-size: 14px; }
+  .arch-card-body {
+    font-size: 10px; color: var(--muted); line-height: 1.6;
+    font-family: -apple-system, sans-serif;
+  }
+  .arch-card-body code {
+    background: rgba(255,255,255,0.06); padding: 1px 5px;
+    border-radius: 3px; font-size: 9px; font-family: 'SF Mono', monospace;
+    color: var(--teal);
+  }
+  .arch-card-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
+  .arch-tag {
+    font-size: 8px; font-weight: 600; padding: 2px 6px;
+    border-radius: 4px; background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border); color: var(--muted);
+    font-family: 'SF Mono', monospace;
+  }
+
+  /* ── PIPELINE STATE MACHINE ── */
+  .states-row {
+    display: flex; gap: 0; overflow-x: auto;
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 14px; padding: 24px 28px; margin-bottom: 28px;
+    align-items: center;
+  }
+  .state-box {
+    flex-shrink: 0; padding: 6px 12px; border-radius: 6px;
+    font-size: 9px; font-weight: 700; letter-spacing: 0.5px;
+    text-align: center; border: 1px solid;
+    white-space: nowrap;
+  }
+  .state-arrow {
+    flex-shrink: 0; color: var(--muted); padding: 0 6px;
+    font-size: 11px;
+  }
+  .st-idle   { background: rgba(107,114,128,0.1); border-color: rgba(107,114,128,0.3); color: var(--muted); }
+  .st-play   { background: rgba(34,197,94,0.1);   border-color: rgba(34,197,94,0.3);   color: var(--green); }
+  .st-scte   { background: rgba(245,158,11,0.1);  border-color: rgba(245,158,11,0.3);  color: var(--amber); }
+  .st-auc    { background: rgba(96,165,250,0.1);  border-color: rgba(96,165,250,0.3);  color: var(--blue); }
+  .st-dec    { background: rgba(167,139,250,0.1); border-color: rgba(167,139,250,0.3); color: var(--purple); }
+  .st-adp    { background: rgba(45,212,191,0.1);  border-color: rgba(45,212,191,0.3);  color: var(--teal); }
+  .st-adc    { background: rgba(34,197,94,0.1);   border-color: rgba(34,197,94,0.3);   color: var(--green); }
+  .st-err    { background: rgba(239,68,68,0.1);   border-color: rgba(239,68,68,0.3);   color: #ef4444; }
+
+  /* ── MULTI-VIEWER ── */
+  .mv-section {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 14px; padding: 28px 32px; margin-bottom: 28px;
+  }
+  .mv-grid {
+    display: grid; grid-template-columns: repeat(6, 1fr);
+    gap: 10px; margin-top: 16px;
+  }
+  .mv-card {
+    border-radius: 8px; padding: 12px 10px; text-align: center;
+    border: 1px solid;
+  }
+  .mv-card .mv-id { font-size: 8px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 5px; }
+  .mv-card .mv-seg { font-size: 9px; color: var(--muted); font-family: -apple-system, sans-serif; margin-bottom: 6px; }
+  .mv-card .mv-winner { font-size: 9px; font-weight: 700; }
+  .mv-card .mv-cpm { font-size: 8px; color: var(--muted); }
+
+  /* ── STATS STRIP ── */
+  .stats-strip {
+    display: flex; gap: 16px; margin-bottom: 28px;
+  }
+  .stat-card {
+    flex: 1; background: var(--panel); border: 1px solid var(--border);
+    border-radius: 10px; padding: 18px 20px; text-align: center;
+    border-top: 2px solid;
+  }
+  .stat-card.c-green  { border-top-color: var(--green); }
+  .stat-card.c-blue   { border-top-color: var(--blue); }
+  .stat-card.c-purple { border-top-color: var(--purple); }
+  .stat-card.c-amber  { border-top-color: var(--amber); }
+  .stat-card.c-teal   { border-top-color: var(--teal); }
+  .stat-card.c-coral  { border-top-color: var(--coral); }
+  .stat-val { font-size: 26px; font-weight: 800; color: #fff; font-family: -apple-system, sans-serif; }
+  .stat-label { font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; margin-top: 4px; }
+
+  /* ── DATA LAYER ── */
+  .data-layer {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 12px; margin-bottom: 28px;
+  }
+  .db-card {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 10px; padding: 16px 18px;
+  }
+  .db-card-title {
+    font-size: 10px; font-weight: 700; color: var(--teal);
+    margin-bottom: 8px; display: flex; align-items: center; gap: 5px;
+  }
+  .db-field {
+    font-size: 9px; color: var(--muted); padding: 3px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    font-family: 'SF Mono', monospace;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .db-field:last-child { border-bottom: none; }
+  .db-type { font-size: 8px; color: rgba(96,165,250,0.6); }
+
+  /* ── Footer ── */
+  .footer {
+    text-align: center; margin-top: 40px;
+    padding-top: 20px; border-top: 1px solid var(--border);
+    font-size: 10px; color: var(--muted);
+    font-family: -apple-system, sans-serif;
+  }
+  .footer strong { color: var(--green); }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════ HEADER -->
+<div class="header">
+  <div class="header-tag">Portfolio Project</div>
+  <h1>Agentic <span>CTV Ad</span> Decisioning Platform</h1>
+  <p>A real-time server-side ad insertion system for connected TV — combining deterministic pipelines with Claude Sonnet AI, delivering personalised ads to six simultaneous viewers in under two seconds.</p>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ KEY STATS -->
+<div class="section-label">Platform metrics</div>
+<div class="stats-strip">
+  <div class="stat-card c-green">
+    <div class="stat-val">&lt;2s</div>
+    <div class="stat-label">End-to-End Latency</div>
+  </div>
+  <div class="stat-card c-blue">
+    <div class="stat-val">5</div>
+    <div class="stat-label">Pipeline Steps</div>
+  </div>
+  <div class="stat-card c-purple">
+    <div class="stat-val">6</div>
+    <div class="stat-label">Simultaneous Viewers</div>
+  </div>
+  <div class="stat-card c-amber">
+    <div class="stat-val">8</div>
+    <div class="stat-label">Live Campaigns</div>
+  </div>
+  <div class="stat-card c-teal">
+    <div class="stat-val">2nd</div>
+    <div class="stat-label">Price Auction (Vickrey)</div>
+  </div>
+  <div class="stat-card c-coral">
+    <div class="stat-val">100%</div>
+    <div class="stat-label">Decisions Audited</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ PRODUCT FLOW -->
+<div class="section-label">Product flow — ad decisioning pipeline</div>
+<div class="product-flow">
+  <div class="flow-row">
+
+    <div class="flow-step">
+      <div class="step-icon s-amber">📡<span class="step-num">1</span></div>
+      <div class="step-name">SCTE-35 Signal</div>
+      <div class="step-sub">Broadcast cue fires 6s before ad slot</div>
+      <div class="step-badge badge-prot">Protocol</div>
+    </div>
+
+    <div class="flow-connector"><div class="arrow">→</div></div>
+
+    <div class="flow-step">
+      <div class="step-icon s-blue">🔍<span class="step-num">2</span></div>
+      <div class="step-name">Inventory Filter</div>
+      <div class="step-sub">Budget · segment · category · geo</div>
+      <div class="step-badge badge-det">Deterministic JS</div>
+    </div>
+
+    <div class="flow-connector"><div class="arrow">→</div></div>
+
+    <div class="flow-step">
+      <div class="step-icon s-blue">✅<span class="step-num">3</span></div>
+      <div class="step-name">Compliance Check</div>
+      <div class="step-sub">Frequency caps · competitive separation</div>
+      <div class="step-badge badge-det">Deterministic JS</div>
+    </div>
+
+    <div class="flow-connector"><div class="arrow">→</div></div>
+
+    <div class="flow-step">
+      <div class="step-icon s-teal">⚖️<span class="step-num">4</span></div>
+      <div class="step-name">Vickrey Auction</div>
+      <div class="step-sub">2nd-price · daypart multipliers · floor CPM</div>
+      <div class="step-badge badge-det">Deterministic JS</div>
+    </div>
+
+    <div class="flow-connector"><div class="arrow">→</div></div>
+
+    <div class="flow-step">
+      <div class="step-icon s-purple">✦<span class="step-num">5</span></div>
+      <div class="step-name">Claude Sonnet</div>
+      <div class="step-sub">Final decision · strategic reasoning · audit trail</div>
+      <div class="step-badge badge-ai">Claude Sonnet 4.6</div>
+    </div>
+
+    <div class="flow-connector"><div class="arrow">→</div></div>
+
+    <div class="flow-step">
+      <div class="step-icon s-coral">📊<span class="step-num">6</span></div>
+      <div class="step-name">VAST Beacons</div>
+      <div class="step-sub">Impression · quartiles · complete · skip</div>
+      <div class="step-badge badge-iab">IAB Standard</div>
+    </div>
+
+    <div class="flow-connector"><div class="arrow">→</div></div>
+
+    <div class="flow-step">
+      <div class="step-icon s-green">📺<span class="step-num">7</span></div>
+      <div class="step-name">HLS Delivery</div>
+      <div class="step-sub">Per-viewer manifest · EXT-X-DISCONTINUITY</div>
+      <div class="step-badge badge-prot">HLS/MPEG-TS</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ STATE MACHINE -->
+<div class="section-label">8-State State Machine</div>
+<div class="states-row">
+  <div class="state-box st-idle">STREAM_IDLE</div>
+  <div class="state-arrow">→</div>
+  <div class="state-box st-play">CONTENT_PLAYING</div>
+  <div class="state-arrow">→</div>
+  <div class="state-box st-scte">SCTE35_DETECTED</div>
+  <div class="state-arrow">→</div>
+  <div class="state-box st-auc">AUCTION_IN_PROGRESS</div>
+  <div class="state-arrow">→</div>
+  <div class="state-box st-dec">AD_DECISION_MADE</div>
+  <div class="state-arrow">→</div>
+  <div class="state-box st-adp">AD_PLAYING</div>
+  <div class="state-arrow">→</div>
+  <div class="state-box st-adc">AD_COMPLETE</div>
+  <div class="state-arrow">→</div>
+  <div class="state-box st-play">CONTENT_PLAYING</div>
+  <div style="flex:1"></div>
+  <div class="state-box st-err" style="margin-left:16px">STREAM_ERROR</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ TECHNICAL ARCHITECTURE -->
+<div class="section-label">Technical architecture — three-layer breakdown</div>
+<div class="arch-grid">
+
+  <!-- PROTOCOL LAYER -->
+  <div class="arch-col">
+    <div class="arch-col-label">01 — Protocol Layer</div>
+
+    <div class="arch-card c-amber">
+      <div class="arch-card-title"><span class="icon">📡</span> SCTE-35</div>
+      <div class="arch-card-body">
+        ANSI standard for digital program insertion. Binary splice insert commands embedded in MPEG-TS streams signal downstream systems 6 seconds before the ad slot.
+      </div>
+      <div class="arch-card-tags">
+        <span class="arch-tag">MPEG-TS</span>
+        <span class="arch-tag">splice_insert()</span>
+        <span class="arch-tag">6s lead time</span>
+      </div>
+    </div>
+
+    <div class="arch-card c-coral">
+      <div class="arch-card-title"><span class="icon">📺</span> HLS Stitching</div>
+      <div class="arch-card-body">
+        Content and ad segments have independent PTS bases. <code>EXT-X-DISCONTINUITY</code> at every content↔ad boundary signals HLS.js to flush its decoder and reinitialise timestamp state.
+      </div>
+      <div class="arch-card-tags">
+        <span class="arch-tag">EXT-X-DISCONTINUITY</span>
+        <span class="arch-tag">PTS reset</span>
+        <span class="arch-tag">MSE</span>
+      </div>
+    </div>
+
+    <div class="arch-card c-green">
+      <div class="arch-card-title"><span class="icon">📊</span> VAST Beacons</div>
+      <div class="arch-card-body">
+        IAB standard tracking. 7 events per impression: Impression, Start, 1st Quartile, Midpoint, 3rd Quartile, Complete, Skip. Logged to Supabase; fire real HTTP in production.
+      </div>
+      <div class="arch-card-tags">
+        <span class="arch-tag">IAB VAST 3.0</span>
+        <span class="arch-tag">7 events</span>
+        <span class="arch-tag">DEMO_MODE</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- DECISIONING LAYER -->
+  <div class="arch-col">
+    <div class="arch-col-label">02 — Decisioning Layer</div>
+
+    <div class="arch-card c-blue">
+      <div class="arch-card-title"><span class="icon">🔍</span> Inventory + Compliance</div>
+      <div class="arch-card-body">
+        Pure deterministic JavaScript. Inventory filters 8 campaigns by budget, audience segment, content category, and geography. Compliance evaluates frequency caps and competitive separation. Fast, testable, no LLM latency.
+      </div>
+      <div class="arch-card-tags">
+        <span class="arch-tag">~5ms</span>
+        <span class="arch-tag">deterministic</span>
+        <span class="arch-tag">no LLM</span>
+      </div>
+    </div>
+
+    <div class="arch-card c-teal">
+      <div class="arch-card-title"><span class="icon">⚖️</span> Vickrey Auction</div>
+      <div class="arch-card-body">
+        Second-price auction: winner pays the second-highest bid. Floor CPM, daypart multipliers (primetime 1.2×), and max candidates are read from <code>platform_settings</code> at runtime. Zero hardcoded values.
+      </div>
+      <div class="arch-card-tags">
+        <span class="arch-tag">2nd-price</span>
+        <span class="arch-tag">daypart multipliers</span>
+        <span class="arch-tag">runtime config</span>
+      </div>
+    </div>
+
+    <div class="arch-card c-purple">
+      <div class="arch-card-title"><span class="icon">✦</span> Claude Sonnet Decision</div>
+      <div class="arch-card-body">
+        Only LLM in the pipeline. Reviews auction winner against viewer segment, content context, and compliance result. Returns confirmation + full chain-of-thought reasoning stored in <code>audit_log</code> per break.
+      </div>
+      <div class="arch-card-tags">
+        <span class="arch-tag">claude-sonnet-4-6</span>
+        <span class="arch-tag">chain-of-thought</span>
+        <span class="arch-tag">auditable</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- DATA LAYER -->
+  <div class="arch-col">
+    <div class="arch-col-label">03 — Data + Infrastructure</div>
+
+    <div class="arch-card c-teal">
+      <div class="arch-card-title"><span class="icon">🗄️</span> Supabase (PostgreSQL)</div>
+      <div class="arch-card-body">
+        Four core tables. All platform settings read at runtime. Audit log stores full agent reasoning JSON. Reset endpoint clears all state atomically between test runs.
+      </div>
+      <div class="arch-card-tags">
+        <span class="arch-tag">campaigns</span>
+        <span class="arch-tag">ad_breaks</span>
+        <span class="arch-tag">audit_log</span>
+        <span class="arch-tag">platform_settings</span>
+      </div>
+    </div>
+
+    <div class="arch-card c-blue">
+      <div class="arch-card-title"><span class="icon">🔄</span> State Machine</div>
+      <div class="arch-card-body">
+        8-state machine wraps the entire pipeline. Agents propose, state machine validates. Invalid transitions are rejected cleanly — prevents state corruption from concurrent events or partial failures.
+      </div>
+      <div class="arch-card-tags">
+        <span class="arch-tag">8 states</span>
+        <span class="arch-tag">state machine</span>
+        <span class="arch-tag">propose/validate</span>
+      </div>
+    </div>
+
+    <div class="arch-card c-green">
+      <div class="arch-card-title"><span class="icon">🚀</span> Runtime</div>
+      <div class="arch-card-body">
+        Node.js + Express. Deployed on Railway. Dashboard polls <code>/api/dashboard</code> every 3s. SSAI manifest served per-viewer per-poll. No websockets — pure HTTP polling and REST.
+      </div>
+      <div class="arch-card-tags">
+        <span class="arch-tag">Node.js</span>
+        <span class="arch-tag">Express</span>
+        <span class="arch-tag">Railway</span>
+        <span class="arch-tag">REST</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════════════════════════════ MULTI-VIEWER -->
+<div class="section-label">Personalisation layer — 6 viewers, 1 broadcast, 6 different ads</div>
+<div class="mv-section">
+  <div class="mv-grid">
+    <div class="mv-card" style="background:rgba(34,197,94,0.08);border-color:rgba(34,197,94,0.3)">
+      <div class="mv-id" style="color:var(--green)">Viewer 1</div>
+      <div class="mv-seg">Sports Enthusiast · US</div>
+      <div class="mv-winner" style="color:var(--green)">Nike</div>
+      <div class="mv-cpm">$15.54 CPM</div>
+    </div>
+    <div class="mv-card" style="background:rgba(96,165,250,0.08);border-color:rgba(96,165,250,0.3)">
+      <div class="mv-id" style="color:var(--blue)">Viewer 2</div>
+      <div class="mv-seg">Premium Sub · UK</div>
+      <div class="mv-winner" style="color:var(--blue)">Apple</div>
+      <div class="mv-cpm">$18.20 CPM</div>
+    </div>
+    <div class="mv-card" style="background:rgba(167,139,250,0.08);border-color:rgba(167,139,250,0.3)">
+      <div class="mv-id" style="color:var(--purple)">Viewer 3</div>
+      <div class="mv-seg">Family · CA</div>
+      <div class="mv-winner" style="color:var(--purple)">Toyota</div>
+      <div class="mv-cpm">$12.80 CPM</div>
+    </div>
+    <div class="mv-card" style="background:rgba(245,158,11,0.08);border-color:rgba(245,158,11,0.3)">
+      <div class="mv-id" style="color:var(--amber)">Viewer 4</div>
+      <div class="mv-seg">Business Travel · DE</div>
+      <div class="mv-winner" style="color:var(--amber)">Marriott</div>
+      <div class="mv-cpm">$14.10 CPM</div>
+    </div>
+    <div class="mv-card" style="background:rgba(45,212,191,0.08);border-color:rgba(45,212,191,0.3)">
+      <div class="mv-id" style="color:var(--teal)">Viewer 5</div>
+      <div class="mv-seg">Movie Buff · AU</div>
+      <div class="mv-winner" style="color:var(--teal)">Netflix</div>
+      <div class="mv-cpm">$11.50 CPM</div>
+    </div>
+    <div class="mv-card" style="background:rgba(249,115,22,0.08);border-color:rgba(249,115,22,0.3)">
+      <div class="mv-id" style="color:var(--coral)">Viewer 6</div>
+      <div class="mv-seg">Young Drivers · US</div>
+      <div class="mv-winner" style="color:var(--coral)">Geico</div>
+      <div class="mv-cpm">$13.40 CPM</div>
+    </div>
+  </div>
+  <div style="margin-top:16px;font-size:10px;color:var(--muted);font-family:-apple-system,sans-serif;text-align:center">
+    Same Champions League broadcast · Same timestamp · Six different server-stitched ad streams · Each manifest built with <code style="background:rgba(255,255,255,0.06);padding:1px 5px;border-radius:3px;color:var(--teal);font-size:9px">EXT-X-DISCONTINUITY</code> at content↔ad boundaries
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ DATA LAYER SCHEMA -->
+<div class="section-label">Data layer — Supabase schema (4 core tables)</div>
+<div class="data-layer">
+  <div class="db-card">
+    <div class="db-card-title">📦 campaigns</div>
+    <div class="db-field">campaign_id <span class="db-type">TEXT PK</span></div>
+    <div class="db-field">advertiser_name <span class="db-type">TEXT</span></div>
+    <div class="db-field">base_cpm <span class="db-type">NUMERIC</span></div>
+    <div class="db-field">budget_remaining <span class="db-type">NUMERIC</span></div>
+    <div class="db-field">target_segments <span class="db-type">TEXT[]</span></div>
+    <div class="db-field">allowed_content <span class="db-type">TEXT[]</span></div>
+    <div class="db-field">status <span class="db-type">TEXT</span></div>
+  </div>
+  <div class="db-card">
+    <div class="db-card-title">📺 ad_breaks</div>
+    <div class="db-field">break_id <span class="db-type">TEXT PK</span></div>
+    <div class="db-field">status <span class="db-type">TEXT</span></div>
+    <div class="db-field">trigger_type <span class="db-type">TEXT</span></div>
+    <div class="db-field">winning_campaign_id <span class="db-type">TEXT</span></div>
+    <div class="db-field">clearing_price_cpm <span class="db-type">NUMERIC</span></div>
+    <div class="db-field">auction_duration_ms <span class="db-type">INT</span></div>
+    <div class="db-field">candidates_considered <span class="db-type">INT</span></div>
+  </div>
+  <div class="db-card">
+    <div class="db-card-title">📝 audit_log</div>
+    <div class="db-field">log_id <span class="db-type">TEXT PK</span></div>
+    <div class="db-field">break_id <span class="db-type">TEXT FK</span></div>
+    <div class="db-field">agent_name <span class="db-type">TEXT</span></div>
+    <div class="db-field">output_decision <span class="db-type">JSONB</span></div>
+    <div class="db-field">reasoning_trace <span class="db-type">TEXT</span></div>
+    <div class="db-field">model_used <span class="db-type">TEXT</span></div>
+    <div class="db-field">duration_ms <span class="db-type">INT</span></div>
+  </div>
+  <div class="db-card">
+    <div class="db-card-title">⚙️ platform_settings</div>
+    <div class="db-field">floor_cpm_default <span class="db-type">NUMERIC</span></div>
+    <div class="db-field">auction_type <span class="db-type">TEXT</span></div>
+    <div class="db-field">max_candidates <span class="db-type">INT</span></div>
+    <div class="db-field">freq_cap_hourly <span class="db-type">INT</span></div>
+    <div class="db-field">freq_cap_daily <span class="db-type">INT</span></div>
+    <div class="db-field">primetime_multiplier <span class="db-type">NUMERIC</span></div>
+    <div class="db-field">competitive_sep <span class="db-type">BOOLEAN</span></div>
+  </div>
+</div>
+
+<div class="footer">
+  Built by <strong>Anuj Wadhwa</strong> · Node.js · Supabase · Claude Sonnet 4.6 · Railway · SCTE-35 · HLS · VAST · Vickrey Auction
+</div>
+
+</body>
+</html>

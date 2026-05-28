@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Agentic Streaming TV Ad Platform — Workflow Diagram</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+  @page { size: A4 landscape; margin: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #05080d; --panel: #0c1018; --border: #1c2535;
+    --green: #22c55e; --blue: #60a5fa; --purple: #a78bfa;
+    --amber: #f59e0b; --teal: #2dd4bf; --coral: #f97316;
+    --text: #e2e8f0; --muted: #64748b; --soft: #94a3b8;
+  }
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: 'Inter', -apple-system, sans-serif;
+    width: 297mm; min-height: 210mm;
+    margin: 0 auto; font-size: 14px;
+  }
+
+  /* ── TOP BAR ── */
+  .topbar {
+    background: linear-gradient(135deg, #0a1628, #0d1f3c, #0a1628);
+    border-bottom: 1px solid rgba(96,165,250,0.2);
+    padding: 16px 40px; display: flex; align-items: center; justify-content: space-between;
+  }
+  .topbar-title { font-size: 18px; font-weight: 800; color: #fff; letter-spacing: -0.3px; }
+  .topbar-title span { color: var(--green); }
+  .topbar-sub { font-size: 12px; color: var(--soft); margin-top: 3px; }
+  .topbar-badge {
+    background: rgba(34,197,94,0.12); border: 1px solid rgba(34,197,94,0.3);
+    color: var(--green); font-size: 10px; font-weight: 700;
+    letter-spacing: 1.2px; text-transform: uppercase;
+    padding: 5px 14px; border-radius: 99px;
+  }
+
+  /* ── MAIN LAYOUT ── */
+  .main { padding: 24px 36px 20px; display: flex; flex-direction: column; gap: 20px; }
+
+  /* ── PIPELINE FLOW ── */
+  .flow-container {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 14px; padding: 24px 28px;
+  }
+  .flow-label {
+    font-size: 8.5px; font-weight: 700; letter-spacing: 2.5px;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 20px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .flow-label::after { content:''; flex:1; height:1px; background: var(--border); }
+
+  .flow-row {
+    display: flex; align-items: flex-start; gap: 0;
+    position: relative;
+  }
+
+  /* Step blocks */
+  .step {
+    flex: 1; display: flex; flex-direction: column; align-items: center;
+    position: relative; z-index: 1;
+  }
+  .step-top { display: flex; flex-direction: column; align-items: center; margin-bottom: 10px; }
+  .step-icon {
+    width: 52px; height: 52px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; border: 1px solid; position: relative; margin-bottom: 8px;
+  }
+  .step-icon .num {
+    position: absolute; top: -7px; left: -7px;
+    width: 16px; height: 16px; border-radius: 50%;
+    background: var(--bg); border: 1px solid var(--border);
+    font-size: 8px; font-weight: 800; display: flex;
+    align-items: center; justify-content: center; color: var(--soft);
+  }
+  .step-name { font-size: 12px; font-weight: 700; color: #fff; text-align: center; }
+  .step-sub  { font-size: 10px; color: var(--muted); text-align: center; margin-top: 2px; max-width: 95px; line-height: 1.45; }
+  .step-badge {
+    margin-top: 6px; padding: 2px 9px; border-radius: 99px;
+    font-size: 8.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px;
+  }
+
+  /* annotation below each step */
+  .step-annotation {
+    background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+    border-radius: 8px; padding: 9px 11px; max-width: 114px; text-align: center;
+    font-size: 10px; color: var(--soft); line-height: 1.5;
+  }
+  .step-annotation strong { color: var(--text); display: block; margin-bottom: 2px; font-size: 11px; }
+
+  /* Arrow between steps */
+  .arrow-col {
+    display: flex; flex-direction: column; align-items: center;
+    padding-top: 18px; width: 36px; flex-shrink: 0;
+  }
+  .arrow-line {
+    width: 28px; height: 2px; background: var(--border); position: relative;
+    margin-bottom: 2px;
+  }
+  .arrow-line::after {
+    content: '▶'; position: absolute; right: -6px; top: -6px;
+    font-size: 9px; color: var(--muted);
+  }
+  .arrow-label { font-size: 7px; color: var(--muted); text-align: center; margin-top: 2px; }
+
+  /* Color classes */
+  .c-amber  { background: rgba(245,158,11,0.08); border-color: rgba(245,158,11,0.3); }
+  .c-blue   { background: rgba(96,165,250,0.08); border-color: rgba(96,165,250,0.3); }
+  .c-teal   { background: rgba(45,212,191,0.08); border-color: rgba(45,212,191,0.3); }
+  .c-purple { background: rgba(167,139,250,0.1); border-color: rgba(167,139,250,0.4); }
+  .c-coral  { background: rgba(249,115,22,0.08); border-color: rgba(249,115,22,0.3); }
+  .c-green  { background: rgba(34,197,94,0.08);  border-color: rgba(34,197,94,0.3); }
+
+  .b-det  { background: rgba(96,165,250,0.1);  color: #60a5fa; border: 1px solid rgba(96,165,250,0.25); }
+  .b-ai   { background: rgba(167,139,250,0.12); color: #a78bfa; border: 1px solid rgba(167,139,250,0.35); }
+  .b-iab  { background: rgba(45,212,191,0.1);  color: #2dd4bf; border: 1px solid rgba(45,212,191,0.25); }
+  .b-prot { background: rgba(245,158,11,0.1);  color: #f59e0b; border: 1px solid rgba(245,158,11,0.25); }
+  .b-hls  { background: rgba(34,197,94,0.1);   color: #22c55e; border: 1px solid rgba(34,197,94,0.25); }
+
+  /* ── BOTTOM THREE PANELS ── */
+  .bottom { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  .panel {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 12px; padding: 16px 18px;
+  }
+  .panel-head {
+    font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 14px;
+    display: flex; align-items: center; gap: 7px;
+  }
+  .panel-head::after { content:''; flex:1; height:1px; background: var(--border); }
+
+  /* State machine */
+  .states { display: flex; flex-wrap: wrap; gap: 5px; align-items: center; }
+  .state {
+    padding: 4px 10px; border-radius: 5px;
+    font-size: 9px; font-weight: 700; letter-spacing: 0.3px;
+    border: 1px solid; white-space: nowrap;
+  }
+  .state-arrow { color: var(--muted); font-size: 11px; }
+  .st-idle   { background: rgba(100,116,139,0.1); border-color: rgba(100,116,139,0.3); color: var(--soft); }
+  .st-play   { background: rgba(34,197,94,0.1);   border-color: rgba(34,197,94,0.3);   color: var(--green); }
+  .st-scte   { background: rgba(245,158,11,0.1);  border-color: rgba(245,158,11,0.3);  color: var(--amber); }
+  .st-auc    { background: rgba(96,165,250,0.1);  border-color: rgba(96,165,250,0.3);  color: var(--blue); }
+  .st-dec    { background: rgba(167,139,250,0.1); border-color: rgba(167,139,250,0.3); color: var(--purple); }
+  .st-adp    { background: rgba(45,212,191,0.1);  border-color: rgba(45,212,191,0.3);  color: var(--teal); }
+  .st-adc    { background: rgba(34,197,94,0.1);   border-color: rgba(34,197,94,0.3);   color: var(--green); }
+  .st-err    { background: rgba(239,68,68,0.1);   border-color: rgba(239,68,68,0.3);   color: #ef4444; }
+  .state-note { font-size: 11px; color: var(--soft); margin-top: 10px; line-height: 1.55; padding: 10px 12px; background: rgba(255,255,255,0.02); border-radius: 6px; border: 1px solid var(--border); }
+
+  /* Multi-viewer */
+  .mv-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 5px; }
+  .mv-card {
+    border-radius: 7px; padding: 8px; text-align: center; border: 1px solid;
+  }
+  .mv-id { font-size: 9px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; }
+  .mv-seg { font-size: 9px; color: var(--muted); margin: 2px 0; }
+  .mv-brand { font-size: 11px; font-weight: 700; }
+  .mv-note { font-size: 11px; color: var(--soft); margin-top: 8px; line-height: 1.55; padding: 10px 12px; background: rgba(255,255,255,0.02); border-radius: 6px; border: 1px solid var(--border); }
+
+  /* Data tables */
+  .db-tables { display: flex; flex-direction: column; gap: 5px; }
+  .db-table-row {
+    display: flex; align-items: center; gap: 8px;
+    padding: 6px 8px; border-radius: 6px;
+    background: rgba(255,255,255,0.02); border: 1px solid var(--border);
+  }
+  .db-icon { font-size: 13px; }
+  .db-name { font-size: 12px; font-weight: 700; color: var(--text); flex: 1; }
+  .db-desc { font-size: 11px; color: var(--muted); }
+
+  /* ── FOOTER ── */
+  .footer {
+    padding: 12px 36px; border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .footer-left { font-size: 12px; color: var(--muted); }
+  .footer-left strong { color: var(--green); }
+  .footer-right { font-size: 11px; color: var(--muted); }
+
+  @media print {
+    body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+<style>
+  .back-nav { padding: 10px 24px; background: #0d0d14; border-bottom: 1px solid rgba(255,255,255,0.07); }
+  .back-link { font-size: 12px; color: #6b7280; text-decoration: none; border: 1px solid rgba(255,255,255,0.07); border-radius: 5px; padding: 4px 12px; }
+  .back-link:hover { color: #f1f1f3; background: rgba(255,255,255,0.05); }
+</style>
+</head>
+<body>
+<div class="back-nav"><a href="index.html" class="back-link">← All Pages</a></div>
+
+<div class="topbar">
+  <div>
+    <div class="topbar-title">Agentic <span>Streaming TV</span> Ad Platform — Workflow Diagram</div>
+    <div class="topbar-sub">End-to-end ad decisioning pipeline · Break Ads · Pause Ads · Binge Frequency Intelligence · CTV</div>
+  </div>
+  <div class="topbar-badge">Workflow Diagram</div>
+</div>
+
+<div class="main">
+
+  <!-- ═══ DUAL TRIGGER SOURCE ═══ -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:4px">
+    <div style="background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.25);border-radius:10px;padding:10px 16px;display:flex;align-items:flex-start;gap:12px">
+      <div style="font-size:22px;line-height:1;flex-shrink:0;margin-top:2px">📡</div>
+      <div>
+        <div style="font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#f59e0b;margin-bottom:4px">Live TV &amp; Sports</div>
+        <div style="font-size:10px;color:var(--soft);line-height:1.55">SCTE-35 broadcast cue fires <strong style="color:var(--text)">6 seconds before</strong> the ad slot — triggering the pipeline in real time across all concurrent viewers</div>
+      </div>
+    </div>
+    <div style="background:rgba(96,165,250,0.06);border:1px solid rgba(96,165,250,0.25);border-radius:10px;padding:10px 16px;display:flex;align-items:flex-start;gap:12px">
+      <div style="font-size:22px;line-height:1;flex-shrink:0;margin-top:2px">🎬</div>
+      <div>
+        <div style="font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#60a5fa;margin-bottom:4px">VOD &amp; On-Demand</div>
+        <div style="font-size:10px;color:var(--soft);line-height:1.55">Chapter-marker reached — DAI Scheduler <strong style="color:var(--text)">pre-paces breaks evenly</strong> across content. Richer personalisation: the platform knows exactly what the viewer chose to watch</div>
+      </div>
+    </div>
+  </div>
+  <div style="text-align:center;font-size:9px;color:var(--muted);margin-bottom:6px;letter-spacing:1px">↓ Both trigger the same AI decisioning pipeline below ↓</div>
+
+  <!-- ═══ MAIN PIPELINE FLOW ═══ -->
+  <div class="flow-container">
+    <div class="flow-label">Ad Decisioning Pipeline — Left to Right · Completes in under 2 seconds · Serves Live TV + VOD</div>
+
+    <div class="flow-row">
+
+      <!-- STEP 1: TRIGGER -->
+      <div class="step">
+        <div class="step-top">
+          <div class="step-icon c-amber"><div class="num">1</div>⚡</div>
+          <div class="step-name">Ad Break Trigger</div>
+          <div class="step-sub">Live or VOD signal</div>
+          <div class="step-badge b-prot">Dual-Mode</div>
+        </div>
+        <div class="step-annotation">
+          <strong>Trigger</strong>
+          Live: SCTE-35 cue (6s advance) · VOD: Chapter marker + DAI break schedule
+        </div>
+      </div>
+
+      <div class="arrow-col">
+        <div class="arrow-line"></div>
+        <div class="arrow-label">6s window<br>begins</div>
+      </div>
+
+      <!-- STEP 2: INVENTORY -->
+      <div class="step">
+        <div class="step-top">
+          <div class="step-icon c-blue"><div class="num">2</div>🔍</div>
+          <div class="step-name">Inventory Filter</div>
+          <div class="step-sub">Campaign eligibility</div>
+          <div class="step-badge b-det">Rule Engine</div>
+        </div>
+        <div class="step-annotation">
+          <strong>Rules Applied</strong>
+          Budget · Audience segment · Content category · Geography · CPM floor
+        </div>
+      </div>
+
+      <div class="arrow-col">
+        <div class="arrow-line"></div>
+        <div class="arrow-label">eligible<br>shortlist</div>
+      </div>
+
+      <!-- STEP 3: COMPLIANCE -->
+      <div class="step">
+        <div class="step-top">
+          <div class="step-icon c-blue"><div class="num">3</div>✅</div>
+          <div class="step-name">Compliance</div>
+          <div class="step-sub">Rules enforcement</div>
+          <div class="step-badge b-det">Rule Engine</div>
+        </div>
+        <div class="step-annotation">
+          <strong>Rules Applied</strong>
+          Hourly/daily freq caps · Competitive separation · Same-session limits
+        </div>
+      </div>
+
+      <div class="arrow-col">
+        <div class="arrow-line"></div>
+        <div class="arrow-label">approved<br>candidates</div>
+      </div>
+
+      <!-- STEP 4: AUCTION -->
+      <div class="step">
+        <div class="step-top">
+          <div class="step-icon c-teal"><div class="num">4</div>⚖️</div>
+          <div class="step-name">Vickrey Auction</div>
+          <div class="step-sub">2nd-price bidding</div>
+          <div class="step-badge b-det">Rule Engine</div>
+        </div>
+        <div class="step-annotation">
+          <strong>Mechanics</strong>
+          Winner pays 2nd-highest bid. Daypart multipliers + floor CPM from database at runtime.
+        </div>
+      </div>
+
+      <div class="arrow-col">
+        <div class="arrow-line"></div>
+        <div class="arrow-label">auction<br>winner</div>
+      </div>
+
+      <!-- STEP 5: CLAUDE -->
+      <div class="step">
+        <div class="step-top">
+          <div class="step-icon c-purple"><div class="num">5</div>✦</div>
+          <div class="step-name">Claude Sonnet</div>
+          <div class="step-sub">Final AI decision</div>
+          <div class="step-badge b-ai">Claude Sonnet AI</div>
+        </div>
+        <div class="step-annotation">
+          <strong>Output</strong>
+          Confirmed decision + full reasoning trace → written to audit trail in the database
+        </div>
+      </div>
+
+      <div class="arrow-col">
+        <div class="arrow-line"></div>
+        <div class="arrow-label">confirmed<br>winner</div>
+      </div>
+
+      <!-- STEP 6: VAST -->
+      <div class="step">
+        <div class="step-top">
+          <div class="step-icon c-coral"><div class="num">6</div>📊</div>
+          <div class="step-name">VAST Beacons</div>
+          <div class="step-sub">IAB impression events</div>
+          <div class="step-badge b-iab">IAB VAST 3.0</div>
+        </div>
+        <div class="step-annotation">
+          <strong>7 Events</strong>
+          Impression · Start · 25% · Midpoint · 75% · Complete · Skip
+        </div>
+      </div>
+
+      <div class="arrow-col">
+        <div class="arrow-line"></div>
+        <div class="arrow-label">per-viewer<br>manifest</div>
+      </div>
+
+      <!-- STEP 7: HLS -->
+      <div class="step">
+        <div class="step-top">
+          <div class="step-icon c-green"><div class="num">7</div>📺</div>
+          <div class="step-name">Stream Delivery</div>
+          <div class="step-sub">Per-viewer ad stitching</div>
+          <div class="step-badge b-hls">Per-Viewer Delivery</div>
+        </div>
+        <div class="step-annotation">
+          <strong>Stitching</strong>
+          Each viewer gets a unique, server-stitched stream — ad insertion is seamless and invisible to the player
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══ BOTTOM THREE PANELS ═══ -->
+  <div class="bottom">
+
+    <!-- STATE MACHINE -->
+    <div class="panel">
+      <div class="panel-head">8-State State Machine (State Machine)</div>
+      <div class="states">
+        <div class="state st-idle">STREAM_IDLE</div>
+        <div class="state-arrow">→</div>
+        <div class="state st-play">CONTENT_PLAYING</div>
+        <div class="state-arrow">→</div>
+        <div class="state st-scte">SCTE35_DETECTED</div>
+        <div class="state-arrow">→</div>
+        <div class="state st-auc">AUCTION_IN_PROGRESS</div>
+        <div class="state-arrow">→</div>
+        <div class="state st-dec">AD_DECISION_MADE</div>
+        <div class="state-arrow">→</div>
+        <div class="state st-adp">AD_PLAYING</div>
+        <div class="state-arrow">→</div>
+        <div class="state st-adc">AD_COMPLETE</div>
+        <div class="state-arrow">→</div>
+        <div class="state st-play">CONTENT_PLAYING</div>
+        <div style="width:100%;margin-top:4px;display:flex;align-items:center;gap:6px">
+          <div class="state st-err">STREAM_ERROR</div>
+          <span style="font-size:8px;color:var(--muted)">← any step can transition here on failure</span>
+        </div>
+      </div>
+      <div class="state-note">
+        <strong style="color:var(--text)">Rule:</strong> Agents propose. The state machine validates. An agent's output is always a proposal — the state machine decides if the transition is valid given current state. Two simultaneous SCTE-35 events? Second is rejected — <em>AUCTION_IN_PROGRESS</em> blocks it.
+      </div>
+    </div>
+
+    <!-- MULTI-VIEWER -->
+    <div class="panel">
+      <div class="panel-head">Personalised Delivery — Live TV + VOD · Same Engine · 6 Viewers</div>
+      <div class="mv-grid">
+        <div class="mv-card" style="background:rgba(34,197,94,0.08);border-color:rgba(34,197,94,0.3)">
+          <div class="mv-id" style="color:#22c55e">📡 Live</div>
+          <div class="mv-seg">Sports Fan · US</div>
+          <div class="mv-brand" style="color:#22c55e">Nike</div>
+        </div>
+        <div class="mv-card" style="background:rgba(96,165,250,0.08);border-color:rgba(96,165,250,0.3)">
+          <div class="mv-id" style="color:#60a5fa">📡 Live</div>
+          <div class="mv-seg">Premium Sub · UK</div>
+          <div class="mv-brand" style="color:#60a5fa">Apple</div>
+        </div>
+        <div class="mv-card" style="background:rgba(167,139,250,0.08);border-color:rgba(167,139,250,0.3)">
+          <div class="mv-id" style="color:#a78bfa">📡 Live</div>
+          <div class="mv-seg">Family · CA</div>
+          <div class="mv-brand" style="color:#a78bfa">Toyota</div>
+        </div>
+        <div class="mv-card" style="background:rgba(245,158,11,0.08);border-color:rgba(245,158,11,0.3)">
+          <div class="mv-id" style="color:#f59e0b">🎬 VOD</div>
+          <div class="mv-seg">Biz Travel · Ch.3</div>
+          <div class="mv-brand" style="color:#f59e0b">Marriott</div>
+        </div>
+        <div class="mv-card" style="background:rgba(45,212,191,0.08);border-color:rgba(45,212,191,0.3)">
+          <div class="mv-id" style="color:#2dd4bf">🎬 VOD</div>
+          <div class="mv-seg">Movie Buff · Ch.2</div>
+          <div class="mv-brand" style="color:#2dd4bf">Netflix</div>
+        </div>
+        <div class="mv-card" style="background:rgba(249,115,22,0.08);border-color:rgba(249,115,22,0.3)">
+          <div class="mv-id" style="color:#f97316">🎬 VOD</div>
+          <div class="mv-seg">Young Driver · Ch.1</div>
+          <div class="mv-brand" style="color:#f97316">Geico</div>
+        </div>
+      </div>
+      <div class="mv-note">
+        Live viewers: SCTE-35 triggers real-time decisioning. VOD viewers: chapter-markers trigger the same pipeline with richer context. Both formats also support <strong style="color:var(--text)">Pause Ads</strong> — when the viewer pauses, a Brand CTA or Sponsored Product Listing appears after 1.5s. <strong style="color:var(--text)">Binge Intelligence</strong> tapers ad load across episodes (3→2→2→1 breaks), resetting on session break.
+      </div>
+    </div>
+
+    <!-- DATA LAYER -->
+    <div class="panel">
+      <div class="panel-head">Data Layer — Database</div>
+      <div class="db-tables">
+        <div class="db-table-row">
+          <div class="db-icon">📦</div>
+          <div class="db-name">campaigns</div>
+          <div class="db-desc">Advertiser metadata · CPM, segments, budgets, targeting rules</div>
+        </div>
+        <div class="db-table-row">
+          <div class="db-icon">📺</div>
+          <div class="db-name">ad_breaks</div>
+          <div class="db-desc">Every break logged — winner, clearing price, candidates, auction ms</div>
+        </div>
+        <div class="db-table-row">
+          <div class="db-icon">📝</div>
+          <div class="db-name">audit_log</div>
+          <div class="db-desc">Full Claude reasoning trace per break — queryable, auditable</div>
+        </div>
+        <div class="db-table-row">
+          <div class="db-icon">⚙️</div>
+          <div class="db-name">platform_settings</div>
+          <div class="db-desc">Floor CPM, daypart multipliers, freq caps — all runtime, no hardcode</div>
+        </div>
+        <div class="db-table-row">
+          <div class="db-icon">🎯</div>
+          <div class="db-name">context_scores</div>
+          <div class="db-desc">Pre-computed Haiku relevance scores per (scene × viewer segment × campaign) — zero LLM at serve time</div>
+        </div>
+      </div>
+      <div class="state-note" style="margin-top:8px">
+        <strong style="color:var(--text)">Audit principle:</strong> Every Claude Sonnet decision writes its full chain-of-thought to the audit trail. Pause ad selections and binge session transitions are also logged per viewer.
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<div class="footer">
+  <div class="footer-left">Built by <strong>Anuj Wadhwa</strong> — Agentic Streaming TV Ad Platform · CTV</div>
+  <div class="footer-right">Agentic Streaming TV Ad Platform · 2026</div>
+</div>
+
+</body>
+</html>

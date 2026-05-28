@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agentic Streaming TV Ad Platform — Portfolio</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap');
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --bg: #0a0a0f; --panel: #111118; --border: rgba(255,255,255,0.08); --text: #f1f1f3; --muted: #6b7280; --soft: #d1d5db; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 48px 24px; }
+    .badge { font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #a855f7; background: rgba(168,85,247,0.12); border: 1px solid rgba(168,85,247,0.25); border-radius: 99px; padding: 4px 12px; margin-bottom: 20px; }
+    h1 { font-size: 32px; font-weight: 900; text-align: center; line-height: 1.2; margin-bottom: 10px; }
+    .sub { font-size: 14px; color: var(--muted); text-align: center; margin-bottom: 48px; }
+    .cards { display: flex; flex-direction: column; gap: 14px; width: 100%; max-width: 480px; }
+    .card { display: flex; flex-direction: column; gap: 4px; padding: 20px 24px; border: 1px solid var(--border); border-radius: 12px; background: var(--panel); text-decoration: none; color: var(--text); transition: border-color 0.15s, background 0.15s; }
+    .card:hover { border-color: rgba(168,85,247,0.4); background: rgba(168,85,247,0.04); }
+    .card-num { font-size: 9px; font-weight: 700; color: #a855f7; letter-spacing: 0.1em; text-transform: uppercase; }
+    .card-title { font-size: 16px; font-weight: 700; }
+    .card-desc { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .arrow { margin-left: auto; font-size: 16px; color: var(--muted); align-self: center; }
+    .card-inner { display: flex; align-items: center; gap: 12px; }
+    .card-body { flex: 1; }
+    footer { margin-top: 48px; font-size: 11px; color: var(--muted); text-align: center; }
+  </style>
+</head>
+<body>
+  <div class="badge">Portfolio · AI Product</div>
+  <h1>Agentic Streaming TV<br>Ad Platform</h1>
+  <p class="sub">Multi-agent AI · Real-time Auction · CTV Ad Decisioning</p>
+
+  <div class="cards">
+    <a class="card" href="one-pager-simple.html">
+      <div class="card-inner">
+        <div class="card-body">
+          <div class="card-num">00 · Start Here</div>
+          <div class="card-title">Simple Explainer</div>
+          <div class="card-desc">What it is, how it works, and which AI concepts it uses — plain English</div>
+        </div>
+        <span class="arrow">→</span>
+      </div>
+    </a>
+    <a class="card" href="one-pager-what-we-built.html">
+      <div class="card-inner">
+        <div class="card-body">
+          <div class="card-num">01 · Overview</div>
+          <div class="card-title">What We Built</div>
+          <div class="card-desc">Architecture, key decisions, tech stack, and agentic concepts</div>
+        </div>
+        <span class="arrow">→</span>
+      </div>
+    </a>
+    <a class="card" href="one-pager-workflow.html">
+      <div class="card-inner">
+        <div class="card-body">
+          <div class="card-num">02 · System Design</div>
+          <div class="card-title">Workflow Diagram</div>
+          <div class="card-desc">End-to-end pipeline from ad request to VAST delivery</div>
+        </div>
+        <span class="arrow">→</span>
+      </div>
+    </a>
+    <a class="card" href="one-pager-output.html">
+      <div class="card-inner">
+        <div class="card-body">
+          <div class="card-num">03 · Demo Output</div>
+          <div class="card-title">Live Output &amp; Screenshots</div>
+          <div class="card-desc">Dashboard, dual-viewer, pause ads, and binge intelligence</div>
+        </div>
+        <span class="arrow">→</span>
+      </div>
+    </a>
+  </div>
+
+  <footer>Agentic Streaming TV Ad Platform · Built with Claude AI · 2026</footer>
+</body>
+</html>

@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Agentic Streaming TV Ad Platform — Platform Output</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+  @page { size: A4 landscape; margin: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #05080d; --panel: #0c1018; --border: #1c2535;
+    --green: #22c55e; --blue: #60a5fa; --purple: #a78bfa;
+    --amber: #f59e0b; --teal: #2dd4bf; --coral: #f97316;
+    --text: #e2e8f0; --muted: #64748b; --soft: #94a3b8;
+  }
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: 'Inter', -apple-system, sans-serif;
+    width: 100%; min-height: 100vh; margin: 0; font-size: 13px;
+  }
+
+  /* ── TOP BAR ── */
+  .topbar {
+    background: linear-gradient(135deg, #0a1628, #0d1f3c, #0a1628);
+    border-bottom: 1px solid rgba(96,165,250,0.2);
+    padding: 14px 32px; display: flex; align-items: center; justify-content: space-between;
+  }
+  .topbar-title { font-size: 18px; font-weight: 800; color: #fff; letter-spacing: -0.3px; }
+  .topbar-title span { color: var(--green); }
+  .topbar-sub { font-size: 12px; color: var(--soft); margin-top: 4px; }
+  .topbar-badge {
+    background: rgba(34,197,94,0.12); border: 1px solid rgba(34,197,94,0.3);
+    color: var(--green); font-size: 10px; font-weight: 700;
+    letter-spacing: 1.2px; text-transform: uppercase;
+    padding: 6px 16px; border-radius: 99px;
+  }
+
+  /* ── BODY ── */
+  .body { padding: 16px 24px 16px; display: flex; flex-direction: column; gap: 14px; }
+
+  /* ── SECTION BLOCK ── */
+  .section-block {
+    border: 1px solid rgba(255,255,255,0.06); border-radius: 12px;
+    overflow: hidden;
+  }
+  .section-header {
+    padding: 10px 16px 9px;
+    background: rgba(255,255,255,0.025);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    display: flex; align-items: baseline; gap: 14px;
+  }
+  .section-label {
+    font-size: 9px; font-weight: 800; letter-spacing: 1.1px;
+    text-transform: uppercase; padding: 3px 10px; border-radius: 99px; border: 1px solid;
+    white-space: nowrap; flex-shrink: 0;
+  }
+  .sl-green  { background: rgba(34,197,94,0.1);  color: #22c55e; border-color: rgba(34,197,94,0.3); }
+  .sl-purple { background: rgba(167,139,250,0.1); color: #a78bfa; border-color: rgba(167,139,250,0.3); }
+  .sl-amber  { background: rgba(245,158,11,0.1);  color: #f59e0b; border-color: rgba(245,158,11,0.3); }
+  .sl-teal   { background: rgba(45,212,191,0.1);  color: #2dd4bf; border-color: rgba(45,212,191,0.3); }
+  .sl-coral  { background: rgba(249,115,22,0.1);  color: #f97316; border-color: rgba(249,115,22,0.3); }
+  .section-guide {
+    font-size: 11px; color: var(--muted); line-height: 1.55; flex: 1;
+  }
+  .section-guide strong { color: var(--soft); font-weight: 600; }
+  .section-inner { padding: 10px; }
+
+  /* ── SCREEN WRAPPER ── */
+  .screen {
+    border-radius: 8px; overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 2px 16px rgba(0,0,0,0.5);
+    display: flex; flex-direction: column;
+  }
+  .screen-bar {
+    background: #0c1118; padding: 5px 10px;
+    display: flex; align-items: center; gap: 6px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    flex-shrink: 0;
+  }
+  .dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+  .dot-r { background: #ef4444; } .dot-y { background: #f59e0b; } .dot-g { background: #22c55e; }
+  .url-bar {
+    flex: 1; background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.05); border-radius: 4px;
+    padding: 3px 8px; font-size: 10px; color: var(--muted);
+    text-align: center; margin: 0 6px;
+    font-family: 'Courier New', monospace;
+  }
+  .screen img { display: block; width: 100%; height: auto; }
+
+  /* ── CAPTION ── */
+  .caption {
+    padding: 8px 12px; background: rgba(0,0,0,0.45);
+    border-top: 1px solid var(--border); font-size: 11px; line-height: 1.5;
+    flex-shrink: 0;
+  }
+  .caption strong { display: block; color: var(--text); font-size: 12px; margin-bottom: 3px; font-weight: 700; }
+  .caption span { color: var(--muted); }
+
+  /* ── LAYOUTS ── */
+  .row { display: flex; gap: 10px; }
+
+  /* ── FOOTER ── */
+  .footer {
+    padding: 10px 24px; border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .footer-left { font-size: 11px; color: var(--muted); }
+  .footer-left strong { color: var(--green); }
+  .footer-right { font-size: 10px; color: var(--muted); }
+
+  @media print {
+    body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+<style>
+  .back-nav { padding: 10px 24px; background: #0d0d14; border-bottom: 1px solid rgba(255,255,255,0.07); }
+  .back-link { font-size: 12px; color: #6b7280; text-decoration: none; border: 1px solid rgba(255,255,255,0.07); border-radius: 5px; padding: 4px 12px; }
+  .back-link:hover { color: #f1f1f3; background: rgba(255,255,255,0.05); }
+</style>
+</head>
+<body>
+<div class="back-nav"><a href="index.html" class="back-link">← All Pages</a></div>
+
+<div class="topbar">
+  <div>
+    <div class="topbar-title">Agentic <span>Streaming TV</span> Ad Platform — Real Platform Screenshots</div>
+    <div class="topbar-sub">Live TV · VOD · Pause Ads · Binge Frequency Intelligence · AI audit trail · Every screen captured from the running platform</div>
+  </div>
+  <div class="topbar-badge">Actual Platform Output</div>
+</div>
+
+<div class="body">
+
+  <!-- ═══ SECTION 1: Live Control Center + AI Reasoning ═══ -->
+  <div class="section-block">
+    <div class="section-header">
+      <div class="section-label sl-green">Section 1 — Live Dashboard + AI Reasoning</div>
+      <div class="section-guide">
+        <strong>Left:</strong> Pipeline strip lights up step-by-step as each break fires — fill rate, avg CPM, and recent breaks update every 3 seconds. <strong>Right:</strong> Click any break row to see Claude Sonnet's full written rationale for that ad decision, stored per impression.
+      </div>
+    </div>
+    <div class="section-inner">
+      <div class="row">
+        <div style="flex:1.2">
+          <div class="screen">
+            <div class="screen-bar">
+              <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+              <div class="url-bar">Live Dashboard — Real-time Control Center</div>
+            </div>
+            <img src="screenshots/dashboard-top.png" alt="Live Dashboard">
+            <div class="caption">
+              <strong>Live Dashboard — Champions League Final · CONTENT_PLAYING · 100% fill rate</strong>
+              <span>5-step pipeline strip shows real-time status for each break. $14.03 avg CPM · 8 impressions recorded. Campaign leaderboard (left) and recent breaks table (right) update every 3 seconds.</span>
+            </div>
+          </div>
+        </div>
+        <div style="flex:0.8">
+          <div class="screen">
+            <div class="screen-bar">
+              <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+              <div class="url-bar">dashboard → click any break row → Auction Detail panel</div>
+            </div>
+            <img src="screenshots/auction-detail.png" alt="Claude AI Auction Detail">
+            <div class="caption">
+              <strong>✦ Claude Sonnet confirms Nike @ $14.38 CPM — full chain-of-thought stored</strong>
+              <span>"Nike is a premier global sports brand with deep roots in football and athletic culture. Placement within the Champions League Final represents peak contextual relevance." Every break is auditable and explainable — not a black box.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ SECTION 2: Live Multi-Viewer + VOD Player ═══ -->
+  <div class="row" style="align-items:stretch">
+
+    <!-- Multi-viewer -->
+    <div style="flex:1">
+      <div class="section-block" style="height:100%">
+        <div class="section-header">
+          <div class="section-label sl-purple">Section 2 — Live TV · 6 Viewers · 6 Different Ads</div>
+          <div class="section-guide">
+            Same live broadcast, same moment. One SCTE-35 signal triggers 6 separate ad decisions — each viewer's stream has a different brand stitched in server-side before the segment reaches their player. No ad markers ever reach the viewer.
+          </div>
+        </div>
+        <div class="section-inner">
+          <div class="screen">
+            <div class="screen-bar">
+              <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+              <div class="url-bar">Live Multi-Viewer — 6 Concurrent Personalised Streams</div>
+            </div>
+            <img src="screenshots/live-viewer-grid.png" alt="6 Viewers 6 Personalised Ads">
+            <div class="caption">
+              <strong>Same broadcast · Same moment · 6 different ads playing simultaneously</strong>
+              <span>Each viewer's segment (Sports, Premium, Family, News, Leisure, General) drives a separate Claude AI decision. The colored border and brand label on each cell shows that viewer's personalized ad — different creative stitched server-side into each HLS manifest. No ad markers ever reach the player.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VOD player -->
+    <div style="flex:1">
+      <div class="section-block" style="height:100%">
+        <div class="section-header">
+          <div class="section-label sl-teal">Section 3 — VOD · Two Viewers · Break Ads</div>
+          <div class="section-guide">
+            Same episode, two viewer profiles. Break ads are pre-computed offline — zero AI at serve time, instant delivery. Each viewer receives a different ad based on their segment. Non-skippable, stitched directly into the video stream.
+          </div>
+        </div>
+        <div class="section-inner">
+          <div class="screen">
+            <div class="screen-bar">
+              <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+              <div class="url-bar">VOD Dual Viewer — Two Viewers · Two Personalised Ads</div>
+            </div>
+            <img src="screenshots/vod-dual-ads.png" alt="VOD Dual Viewer with Personalised Ads">
+            <div class="caption">
+              <strong>VOD Dual Viewer — Two viewers, two different ads, same episode</strong>
+              <span>Break ads pre-computed offline by rule-based filtering — instant serve, zero AI latency at runtime. Each viewer profile (Premium / Sports) gets a different brand. Segments stitched server-side into each HLS manifest.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══ SECTION 4 + 5: Pause Ads + Binge Intelligence ═══ -->
+  <div class="row" style="align-items:stretch">
+
+    <!-- Pause Ads -->
+    <div style="flex:1.2">
+      <div class="section-block" style="height:100%">
+        <div class="section-header">
+          <div class="section-label sl-amber">Section 4 — Pause Ads · Two Formats</div>
+          <div class="section-guide">
+            Triggered 1.5s after the viewer pauses. <strong>Brand CTA</strong> (left) for service advertisers — opens app or web. <strong>Sponsored PLA</strong> (right) for product advertisers — single product + Shop button with full attribution. Format is campaign-driven, not random.
+          </div>
+        </div>
+        <div class="section-inner">
+          <div class="row" style="gap:8px">
+
+            <!-- Brand format mockup -->
+            <div style="flex:1">
+              <div class="screen">
+                <div class="screen-bar">
+                  <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+                  <div class="url-bar">Pause → 1.5s → Brand CTA overlay appears</div>
+                </div>
+                <div style="background:#060912;aspect-ratio:16/9;position:relative;overflow:hidden">
+                  <div style="position:absolute;inset:0;background:linear-gradient(135deg,#080c18,#0d1830,#06091a)"></div>
+                  <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:900;color:rgba(255,255,255,0.06)">▐▐</div>
+                  <div style="position:absolute;inset:0;background:linear-gradient(90deg,transparent 35%,rgba(0,0,0,0.82) 65%)"></div>
+                  <div style="position:absolute;right:10px;top:50%;transform:translateY(-50%);width:128px;background:rgba(10,10,16,0.97);border:1px solid rgba(255,255,255,0.1);border-radius:5px;padding:9px;display:flex;flex-direction:column;gap:5px">
+                    <div style="display:flex;justify-content:space-between;align-items:center">
+                      <span style="font-size:6.5px;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:.1em">Sponsored</span>
+                      <span style="font-size:6px;background:rgba(168,85,247,0.18);color:#a855f7;border-radius:2px;padding:1px 4px;font-weight:700">BRAND AD</span>
+                    </div>
+                    <div style="font-size:15px;font-weight:900;color:#fff;line-height:1.1;margin-top:1px">Chase<br>Sapphire</div>
+                    <div style="font-size:7.5px;color:rgba(255,255,255,0.5);line-height:1.4">Earn 3× on dining &amp; travel. No foreign transaction fees.</div>
+                    <div style="background:#117ACA;color:#fff;text-align:center;border-radius:3px;padding:5px;font-size:8.5px;font-weight:700;margin-top:2px">Apply Now</div>
+                    <div style="font-size:6.5px;color:rgba(255,255,255,0.28)">↗ Opens Web</div>
+                  </div>
+                </div>
+                <div class="caption">
+                  <strong>Brand CTA — Chase Sapphire · service advertiser format</strong>
+                  <span>Viewer paused. After 1.5s, brand ad slides in. CTA opens app or web. Dismiss with ✕ to resume. Appears only for campaigns typed as brand/service — financial, travel, insurance.</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- PLA format mockup -->
+            <div style="flex:1">
+              <div class="screen">
+                <div class="screen-bar">
+                  <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+                  <div class="url-bar">Pause → 1.5s → Sponsored PLA overlay appears</div>
+                </div>
+                <div style="background:#060912;aspect-ratio:16/9;position:relative;overflow:hidden">
+                  <div style="position:absolute;inset:0;background:linear-gradient(135deg,#080c18,#0d1830,#06091a)"></div>
+                  <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:900;color:rgba(255,255,255,0.06)">▐▐</div>
+                  <div style="position:absolute;inset:0;background:linear-gradient(90deg,transparent 35%,rgba(0,0,0,0.82) 65%)"></div>
+                  <div style="position:absolute;right:10px;top:50%;transform:translateY(-50%);width:128px;background:rgba(10,10,16,0.97);border:1px solid rgba(255,255,255,0.1);border-radius:5px;padding:9px;display:flex;flex-direction:column;gap:6px">
+                    <div style="display:flex;justify-content:space-between;align-items:center">
+                      <span style="font-size:9px;font-weight:700;color:#e2e8f0">Apple</span>
+                      <span style="font-size:6.5px;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:.08em">Sponsored</span>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:7px;padding-top:5px;border-top:1px solid rgba(255,255,255,0.07)">
+                      <div style="width:28px;height:28px;border-radius:4px;background:rgba(255,255,255,0.07);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0">💻</div>
+                      <div style="flex:1;min-width:0">
+                        <div style="font-size:7.5px;font-weight:500;color:#e2e8f0;line-height:1.3">MacBook Air 15" M3</div>
+                        <div style="font-size:9px;font-weight:800;color:#f59e0b;margin-top:2px">$1,099</div>
+                        <div style="font-size:6.5px;color:#64748b;margin-top:1px">M3 · 18-hr battery</div>
+                      </div>
+                    </div>
+                    <div style="background:rgba(255,255,255,0.1);color:#e2e8f0;text-align:center;border-radius:3px;padding:4px;font-size:8px;font-weight:700">Shop →</div>
+                  </div>
+                </div>
+                <div class="caption">
+                  <strong>Sponsored PLA — Apple · product advertiser format</strong>
+                  <span>Single product, price, spec line. "Shop →" opens a full product detail page with Add to Cart, specs, and a "Why you're seeing this" ad attribution panel explaining the contextual targeting decision.</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Binge Intelligence -->
+    <div style="flex:0.85">
+      <div class="section-block" style="height:100%">
+        <div class="section-header">
+          <div class="section-label sl-purple">Section 5 — Binge Frequency Intelligence</div>
+          <div class="section-guide">
+            ● = break fires · ○ = suppressed. Ad load tapers 3→2→2→1 across a 4-episode session. Idle 30+ minutes or a new login resets to full load. Drag the idle scrubber past 30m to demo the reset live.
+          </div>
+        </div>
+        <div class="section-inner">
+          <div class="screen">
+            <div class="screen-bar">
+              <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+              <div class="url-bar">vod-dual.html → Binge Intelligence panel · bottom of page</div>
+            </div>
+            <div style="background:#0c1018;padding:13px 14px;display:flex;flex-direction:column;gap:11px">
+              <div style="display:flex;align-items:center;justify-content:space-between">
+                <span style="font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:#e2e8f0">Binge Intelligence</span>
+                <span style="font-size:7.5px;color:#64748b">Session break resets to full load</span>
+              </div>
+
+              <!-- Sarah: Ep 3, normal session -->
+              <div style="background:rgba(29,158,117,0.05);border:1px solid rgba(29,158,117,0.2);border-radius:6px;padding:9px 11px;display:flex;flex-direction:column;gap:7px">
+                <div style="font-size:8.5px;font-weight:700;color:#1D9E75">Sarah — Premium Subscriber · currently Ep 3</div>
+                <div style="display:flex;gap:4px">
+                  <div style="flex:1;padding:4px;border-radius:3px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.02);display:flex;flex-direction:column;align-items:center;gap:2px">
+                    <span style="font-size:6.5px;color:#64748b;font-weight:600">Ep 1</span>
+                    <span style="font-size:8px;letter-spacing:1px;color:#94a3b8;font-family:monospace">●●●</span>
+                    <span style="font-size:6.5px;color:#64748b">3 ads</span>
+                  </div>
+                  <div style="flex:1;padding:4px;border-radius:3px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.02);display:flex;flex-direction:column;align-items:center;gap:2px">
+                    <span style="font-size:6.5px;color:#64748b;font-weight:600">Ep 2</span>
+                    <span style="font-size:8px;letter-spacing:1px;color:#94a3b8;font-family:monospace">●○●</span>
+                    <span style="font-size:6.5px;color:#64748b">2 ads</span>
+                  </div>
+                  <div style="flex:1;padding:4px;border-radius:3px;border:1px solid rgba(168,85,247,0.5);background:rgba(168,85,247,0.1);display:flex;flex-direction:column;align-items:center;gap:2px">
+                    <span style="font-size:6.5px;color:#64748b;font-weight:600">Ep 3</span>
+                    <span style="font-size:8px;letter-spacing:1px;color:#c084fc;font-family:monospace">●○●</span>
+                    <span style="font-size:6.5px;color:rgba(192,132,252,0.7);font-weight:700">2 ads</span>
+                  </div>
+                  <div style="flex:1;padding:4px;border-radius:3px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.02);display:flex;flex-direction:column;align-items:center;gap:2px">
+                    <span style="font-size:6.5px;color:#64748b;font-weight:600">Ep 4</span>
+                    <span style="font-size:8px;letter-spacing:1px;color:#94a3b8;font-family:monospace">○●○</span>
+                    <span style="font-size:6.5px;color:#64748b">1 ad</span>
+                  </div>
+                </div>
+                <div>
+                  <div style="display:flex;justify-content:space-between;margin-bottom:3px">
+                    <span style="font-size:7px;color:#64748b">Session idle timer</span>
+                    <span style="font-size:7px;color:#94a3b8">4m</span>
+                  </div>
+                  <div style="position:relative;height:4px;background:rgba(255,255,255,0.08);border-radius:2px">
+                    <div style="position:absolute;left:50%;top:-3px;bottom:-3px;width:2px;background:rgba(239,68,68,0.5);border-radius:1px;transform:translateX(-50%)"></div>
+                    <div style="width:7%;height:100%;background:#a855f7;border-radius:2px"></div>
+                  </div>
+                  <div style="font-size:7px;color:#64748b;margin-top:3px">Session active — continuous viewing</div>
+                </div>
+              </div>
+
+              <!-- Alex: Ep 2, session break at 38m -->
+              <div style="background:rgba(55,138,221,0.05);border:1px solid rgba(55,138,221,0.2);border-radius:6px;padding:9px 11px;display:flex;flex-direction:column;gap:7px">
+                <div style="font-size:8.5px;font-weight:700;color:#378ADD">Alex — Sports Enthusiast · Ep 2 · session break</div>
+                <div style="display:flex;gap:4px">
+                  <div style="flex:1;padding:4px;border-radius:3px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.02);display:flex;flex-direction:column;align-items:center;gap:2px">
+                    <span style="font-size:6.5px;color:#64748b;font-weight:600">Ep 1</span>
+                    <span style="font-size:8px;letter-spacing:1px;color:#94a3b8;font-family:monospace">●●●</span>
+                    <span style="font-size:6.5px;color:#64748b">3 ads</span>
+                  </div>
+                  <div style="flex:1;padding:4px;border-radius:3px;border:1px solid rgba(168,85,247,0.5);background:rgba(168,85,247,0.1);display:flex;flex-direction:column;align-items:center;gap:2px">
+                    <span style="font-size:6.5px;color:#64748b;font-weight:600">Ep 2</span>
+                    <span style="font-size:8px;letter-spacing:1px;color:#c084fc;font-family:monospace">●○●</span>
+                    <span style="font-size:6.5px;color:rgba(192,132,252,0.7);font-weight:700">2 ads</span>
+                  </div>
+                  <div style="flex:1;padding:4px;border-radius:3px;border:1px solid rgba(239,68,68,0.35);background:rgba(239,68,68,0.06);display:flex;flex-direction:column;align-items:center;gap:2px">
+                    <span style="font-size:6.5px;color:#64748b;font-weight:600">Ep 3</span>
+                    <span style="font-size:8px;letter-spacing:1px;color:#f87171;font-family:monospace">●●●</span>
+                    <span style="font-size:6px;color:#ef4444;font-weight:700;text-align:center;line-height:1.2">2→3 (paused reset)</span>
+                  </div>
+                  <div style="flex:1;padding:4px;border-radius:3px;border:1px solid rgba(239,68,68,0.25);background:rgba(239,68,68,0.04);display:flex;flex-direction:column;align-items:center;gap:2px">
+                    <span style="font-size:6.5px;color:#64748b;font-weight:600">Ep 4</span>
+                    <span style="font-size:8px;letter-spacing:1px;color:#f87171;font-family:monospace">●○●</span>
+                    <span style="font-size:6px;color:#ef4444;font-weight:700;text-align:center;line-height:1.2">1→2 (paused reset)</span>
+                  </div>
+                </div>
+                <div>
+                  <div style="display:flex;justify-content:space-between;margin-bottom:3px">
+                    <span style="font-size:7px;color:#64748b">Session idle timer</span>
+                    <span style="font-size:7px;color:#ef4444;font-weight:700">38m ⚠</span>
+                  </div>
+                  <div style="position:relative;height:4px;background:rgba(255,255,255,0.08);border-radius:2px">
+                    <div style="position:absolute;left:50%;top:-3px;bottom:-3px;width:2px;background:rgba(239,68,68,0.55);border-radius:1px;transform:translateX(-50%)"></div>
+                    <div style="width:63%;height:100%;background:#ef4444;border-radius:2px"></div>
+                  </div>
+                  <div style="font-size:7px;color:#ef4444;font-weight:600;margin-top:3px">Session break — next episode resets to full 3-break load</div>
+                </div>
+              </div>
+
+            </div>
+            <div class="caption">
+              <strong>Sarah (Ep 3, 4m idle): binge adaptation · Alex (Ep 2, 38m idle): session break detected</strong>
+              <span>Sarah gets 2 of 3 breaks — binge taper active, continuous session. Alex's idle timer crossed 30m — "Next Episode" button turns red and restores full load. Drag the scrubber past the red marker to demo this live in the VOD viewer.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<div class="footer">
+  <div class="footer-left">Built by <strong>Anuj Wadhwa</strong> · Agentic Streaming TV Ad Platform · CTV · 2026</div>
+  <div class="footer-right">Agentic Streaming TV Ad Platform · 2026</div>
+</div>
+
+</body>
+</html>

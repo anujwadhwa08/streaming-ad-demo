@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agentic Streaming TV Ad Platform — Simple Explainer</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0f;
+      --panel: #111118;
+      --panel2: #16161f;
+      --border: rgba(255,255,255,0.07);
+      --text: #f1f1f3;
+      --muted: #6b7280;
+      --soft: #c9cdd6;
+      --purple: #a855f7;
+      --purple-dim: rgba(168,85,247,0.12);
+      --blue: #60a5fa;
+      --green: #34d399;
+      --amber: #f59e0b;
+      --red: #f87171;
+    }
+
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; font-size: 15px; }
+
+    .page { max-width: 900px; margin: 0 auto; padding: 56px 32px 80px; }
+
+    /* ── Header */
+    .header { text-align: center; margin-bottom: 64px; }
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--purple); background: var(--purple-dim);
+      border: 1px solid rgba(168,85,247,0.22); border-radius: 99px;
+      padding: 5px 14px; margin-bottom: 22px;
+    }
+    .title { font-size: 42px; font-weight: 900; line-height: 1.15; letter-spacing: -0.02em; margin-bottom: 14px; }
+    .title span { color: var(--purple); }
+    .subtitle { font-size: 17px; color: var(--muted); max-width: 580px; margin: 0 auto; line-height: 1.75; }
+
+    /* ── Section */
+    .section { margin-bottom: 52px; }
+    .section-label {
+      font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.14em;
+      color: var(--muted); margin-bottom: 18px; display: flex; align-items: center; gap: 10px;
+    }
+    .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+    /* ── Problem / solution split */
+    .split { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .split-card { padding: 22px 24px; border-radius: 12px; border: 1px solid var(--border); background: var(--panel); }
+    .split-card.problem { border-color: rgba(248,113,113,0.2); background: rgba(248,113,113,0.04); }
+    .split-card.solution { border-color: rgba(52,211,153,0.2); background: rgba(52,211,153,0.04); }
+    .split-tag { font-size: 9px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 10px; }
+    .problem .split-tag { color: var(--red); }
+    .solution .split-tag { color: var(--green); }
+    .split-card p { font-size: 14px; color: var(--soft); line-height: 1.7; }
+
+    /* ── Pipeline flow */
+    .pipeline { display: flex; flex-direction: column; gap: 0; }
+    .pipe-step { display: flex; gap: 18px; position: relative; }
+    .pipe-step:not(:last-child)::before {
+      content: ''; position: absolute; left: 19px; top: 42px;
+      width: 1px; height: calc(100% - 12px); background: var(--border);
+    }
+    .pipe-num {
+      width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 800;
+      border: 1px solid var(--border); background: var(--panel2); color: var(--muted);
+    }
+    .pipe-num.ai-step {
+      border-color: rgba(168,85,247,0.5); background: rgba(168,85,247,0.1); color: var(--purple);
+    }
+    .pipe-body { padding: 8px 0 28px; flex: 1; }
+    .pipe-name { font-size: 15px; font-weight: 700; margin-bottom: 5px; }
+    .pipe-desc { font-size: 14px; color: var(--soft); line-height: 1.7; }
+    .pipe-badge {
+      display: inline-block; margin-top: 6px; font-size: 9px; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase; padding: 2px 8px; border-radius: 4px;
+    }
+    .badge-rule { background: rgba(96,165,250,0.12); color: var(--blue); }
+    .badge-ai   { background: rgba(168,85,247,0.12); color: var(--purple); }
+    .badge-math { background: rgba(245,158,11,0.12); color: var(--amber); }
+    .badge-log  { background: rgba(107,114,128,0.15); color: var(--muted); }
+
+    /* ── AI Concepts grid */
+    .concepts { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .concept-card { padding: 20px 22px; border-radius: 10px; border: 1px solid var(--border); background: var(--panel); }
+    .concept-card.highlight { border-color: rgba(168,85,247,0.3); background: rgba(168,85,247,0.05); }
+    .concept-icon { font-size: 22px; margin-bottom: 10px; }
+    .concept-name { font-size: 14px; font-weight: 800; margin-bottom: 6px; }
+    .concept-plain { font-size: 12px; font-weight: 600; color: var(--purple); margin-bottom: 9px; font-style: italic; }
+    .concept-desc { font-size: 13px; color: var(--muted); line-height: 1.65; }
+
+    /* ── Ad formats */
+    .formats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .format-card { padding: 18px 20px; border-radius: 10px; border: 1px solid var(--border); background: var(--panel); }
+    .format-icon { font-size: 20px; margin-bottom: 8px; }
+    .format-name { font-size: 14px; font-weight: 700; margin-bottom: 5px; }
+    .format-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+    /* ── Value metrics */
+    .value-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .value-card { padding: 20px; border-radius: 10px; text-align: center; border: 1px solid var(--border); background: var(--panel); }
+    .value-num { font-size: 32px; font-weight: 900; font-variant-numeric: tabular-nums; color: var(--amber); margin-bottom: 6px; }
+    .value-label { font-size: 12px; color: var(--muted); line-height: 1.55; }
+
+    /* ── PM decisions */
+    .decisions { display: flex; flex-direction: column; gap: 12px; }
+    .decision-row {
+      display: flex; gap: 14px; align-items: flex-start;
+      padding: 14px 16px; border-radius: 8px;
+      border: 1px solid var(--border); background: var(--panel);
+    }
+    .dq { font-size: 14px; font-weight: 700; color: var(--text); min-width: 270px; }
+    .da { font-size: 14px; color: var(--soft); line-height: 1.6; }
+    .da span { color: var(--muted); }
+
+    /* ── Callout box */
+    .callout {
+      padding: 24px 28px; border-radius: 10px;
+      border: 1px solid rgba(168,85,247,0.25); background: rgba(168,85,247,0.05);
+      font-size: 15px; color: var(--soft); line-height: 1.75;
+    }
+    .callout strong { color: var(--text); }
+
+    .footer {
+      text-align: center; margin-top: 64px; padding-top: 24px;
+      border-top: 1px solid var(--border); font-size: 11px; color: var(--muted);
+    }
+
+    /* ── Problem hooks */
+    .hooks { display: flex; flex-direction: column; gap: 14px; margin-bottom: 0; }
+    .hook-card {
+      display: flex; gap: 18px; align-items: flex-start;
+      padding: 20px 22px; border-radius: 10px;
+      border: 1px solid var(--border); background: var(--panel);
+      position: relative; overflow: hidden;
+    }
+    .hook-card::before {
+      content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+      width: 3px;
+    }
+    .hook-card.hc1::before { background: var(--red); }
+    .hook-card.hc2::before { background: var(--amber); }
+    .hook-card.hc3::before { background: var(--blue); }
+    .hook-card.hc4::before { background: var(--purple); }
+    .hook-q {
+      font-size: 15px; font-weight: 700; color: var(--text);
+      margin-bottom: 6px; line-height: 1.4;
+    }
+    .hook-a { font-size: 13px; color: var(--muted); line-height: 1.7; }
+    .hook-num {
+      font-size: 22px; font-weight: 900; font-variant-numeric: tabular-nums;
+      color: var(--border); flex-shrink: 0; line-height: 1; padding-top: 2px;
+      width: 28px; text-align: right;
+    }
+
+    @media (max-width: 600px) {
+      .split, .concepts, .value-grid, .formats { grid-template-columns: 1fr; }
+      .title { font-size: 26px; }
+      .dq { min-width: unset; }
+      .decision-row { flex-direction: column; gap: 6px; }
+    }
+  .topnav {
+    display: flex; align-items: center; padding: 14px 32px;
+    border-bottom: 1px solid var(--border); background: var(--panel);
+  }
+  .back-link {
+    font-size: 12px; color: var(--muted); text-decoration: none;
+    border: 1px solid var(--border); border-radius: 5px;
+    padding: 5px 12px; transition: color 0.15s, background 0.15s;
+  }
+  .back-link:hover { color: var(--text); background: rgba(255,255,255,0.05); }
+  </style>
+</head>
+<body>
+<div class="topnav">
+  <a href="index.html" class="back-link">← All Pages</a>
+</div>
+<div class="page">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="eyebrow">Portfolio · AI Product Demo · 2026</div>
+    <h1 class="title">Agentic <span>Streaming TV</span><br>Ad Platform</h1>
+    <p class="subtitle">
+      A working system where one AI agent makes the final ad decision — supported by
+      rule-based filtering, a live auction engine, and behavioral session intelligence.
+    </p>
+  </div>
+
+  <!-- Problem hooks -->
+  <div class="section">
+    <div class="section-label">The Problems This Explores</div>
+    <div class="hooks">
+
+      <div class="hook-card hc1">
+        <div class="hook-num">01</div>
+        <div>
+          <div class="hook-q">Ad load stays fixed even when viewer engagement changes completely</div>
+          <div class="hook-a">Someone three episodes deep into a binge is not the same viewer as someone in their first 10 minutes. Static ad schedules don't know the difference — they serve the same break count regardless of session depth, completion likelihood, or churn risk. A system should adapt.</div>
+        </div>
+      </div>
+
+      <div class="hook-card hc2">
+        <div class="hook-num">02</div>
+        <div>
+          <div class="hook-q">When an ad underperforms, nobody knows exactly why</div>
+          <div class="hook-a">Was it the wrong audience segment? The wrong time of day? Poor content fit? Frequency fatigue? Traditional ad pipelines return a winner — not a reason. Without a reasoning trace per decision, optimization is guesswork. Auditability needs to be first-class, not an afterthought.</div>
+        </div>
+      </div>
+
+      <div class="hook-card hc3">
+        <div class="hook-num">03</div>
+        <div>
+          <div class="hook-q">Context is rich at decision time — and almost none of it gets used</div>
+          <div class="hook-a">The system already knows: what's playing, who's watching, what time it is, how long the session has been running, and what ads have already shown. The auction picks a price winner. But a price winner isn't always the right ad for this viewer, at this moment, in this content. Reasoning over the full context is the gap.</div>
+        </div>
+      </div>
+
+      <div class="hook-card hc4">
+        <div class="hook-num">04</div>
+        <div>
+          <div class="hook-q">LLMs reason well — but what does "AI in a real-time ad pipeline" actually look like built?</div>
+          <div class="hook-a">Latency limits, guardrails, state machine validation, structured outputs, audit logging — these constraints shape every product decision when you put AI in the critical path. This system is an attempt to answer that question with a working implementation, not a concept.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Problem -->
+  <div class="section">
+    <div class="section-label">What This Explores</div>
+    <div class="split">
+      <div class="split-card problem">
+        <div class="split-tag">The Question</div>
+        <p>
+          Programmatic CTV ad decisioning is a mature, complex space — real-time bidding,
+          audience targeting, deal prioritization, frequency capping.
+          This demo asks a different question: <em>what does the decisioning layer
+          look like when an LLM is the final decision-maker?</em>
+          Not replacing the auction or the targeting stack — sitting above it,
+          reasoning across the outputs and explaining its call.
+        </p>
+      </div>
+      <div class="split-card solution">
+        <div class="split-tag">What Was Built</div>
+        <p>
+          A working pipeline where one Claude Sonnet agent receives the auction winner,
+          content metadata, viewer signals, and time-of-day context — and produces
+          a final decision with a written rationale stored per impression.
+          The focus: can an LLM act as a reasoning layer in a real-time ad pipeline,
+          and can every decision it makes be fully auditable?
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- How it works -->
+  <div class="section">
+    <div class="section-label">How the Pipeline Works</div>
+    <div class="pipeline">
+
+      <div class="pipe-step">
+        <div class="pipe-num">1</div>
+        <div class="pipe-body">
+          <div class="pipe-name">Ad Opportunity Detected</div>
+          <div class="pipe-desc">
+            A trigger fires — a scheduled break in a show, a viewer pausing, or a broadcast
+            cue signal (SCTE-35 for live TV). The system collects context: content genre,
+            time of day, viewer segment, session history.
+          </div>
+          <span class="pipe-badge badge-rule">Trigger Layer</span>
+        </div>
+      </div>
+
+      <div class="pipe-step">
+        <div class="pipe-num">2</div>
+        <div class="pipe-body">
+          <div class="pipe-name">Inventory Filter — Rule-Based</div>
+          <div class="pipe-desc">
+            A JavaScript module filters all live campaigns down to eligible candidates:
+            correct audience segment, content type allowed, budget remaining.
+            No AI here — fast, deterministic rule evaluation.
+          </div>
+          <span class="pipe-badge badge-rule">Rule-Based Filter</span>
+        </div>
+      </div>
+
+      <div class="pipe-step">
+        <div class="pipe-num">3</div>
+        <div class="pipe-body">
+          <div class="pipe-name">Compliance Check — Rule-Based</div>
+          <div class="pipe-desc">
+            Another module enforces policy rules: hourly and daily frequency caps,
+            same-campaign restrictions, competitive separation (no two rival brands
+            in the same break). Anything in violation is removed before auction.
+          </div>
+          <span class="pipe-badge badge-rule">Rule-Based Check</span>
+        </div>
+      </div>
+
+      <div class="pipe-step">
+        <div class="pipe-num">4</div>
+        <div class="pipe-body">
+          <div class="pipe-name">Second-Price Auction</div>
+          <div class="pipe-desc">
+            Eligible campaigns bid in a Vickrey (second-price) auction — the same
+            mechanism used by Google Ads. The highest bidder wins but pays the
+            second-highest price plus one cent. Transparent and fair.
+          </div>
+          <span class="pipe-badge badge-math">Vickrey Auction · Math</span>
+        </div>
+      </div>
+
+      <div class="pipe-step">
+        <div class="pipe-num ai-step">5</div>
+        <div class="pipe-body">
+          <div class="pipe-name">AI Decision Agent — The Only AI Step</div>
+          <div class="pipe-desc">
+            Claude Sonnet receives the auction winner, context scores, viewer profile,
+            and content metadata. It reasons about the full picture and makes the final
+            ad selection — writing out its reasoning in plain language. Every decision
+            is saved to an audit log with the full reasoning trace.
+          </div>
+          <span class="pipe-badge badge-ai">Claude Sonnet · Decision Agent</span>
+        </div>
+      </div>
+
+      <div class="pipe-step">
+        <div class="pipe-num">6</div>
+        <div class="pipe-body">
+          <div class="pipe-name">Ad Serves. Impression Logged.</div>
+          <div class="pipe-desc">
+            The winning ad plays in the viewer's stream. A tracking module logs the
+            impression, fires VAST beacons, and updates campaign spend in the database.
+            No AI — deterministic event logging.
+          </div>
+          <span class="pipe-badge badge-log">Event Logging · No AI</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- AI concepts used -->
+  <div class="section">
+    <div class="section-label">AI Concepts Used</div>
+    <div class="concepts">
+
+      <div class="concept-card highlight">
+        <div class="concept-icon">🤖</div>
+        <div class="concept-name">Agentic AI</div>
+        <div class="concept-plain">"AI that takes actions, not just answers questions"</div>
+        <div class="concept-desc">
+          The Decision Agent doesn't just return a score — it reasons through the full context,
+          selects a winner, and writes an explanation. It operates autonomously within
+          a defined pipeline, taking an action (ad selection) that has real downstream effects.
+        </div>
+      </div>
+
+      <div class="concept-card highlight">
+        <div class="concept-icon">📋</div>
+        <div class="concept-name">Structured Outputs + Audit Logging</div>
+        <div class="concept-plain">"AI that explains every decision it makes"</div>
+        <div class="concept-desc">
+          The agent returns a structured decision — campaign selected, reasoning, confidence.
+          Every decision is stored in an audit log with the full reasoning trace.
+          This is what makes AI trustworthy in a production ad system.
+        </div>
+      </div>
+
+      <div class="concept-card">
+        <div class="concept-icon">🛡️</div>
+        <div class="concept-name">State Machine Guardrails</div>
+        <div class="concept-plain">"AI proposes. System validates. System executes."</div>
+        <div class="concept-desc">
+          The agent never acts directly. Every proposal passes through a state machine
+          that validates the transition before execution. This keeps the system
+          auditable and prevents the agent from taking invalid or unsafe actions.
+        </div>
+      </div>
+
+      <div class="concept-card">
+        <div class="concept-icon">🧠</div>
+        <div class="concept-name">Context-Aware Decisioning</div>
+        <div class="concept-plain">"AI that reads the room before deciding"</div>
+        <div class="concept-desc">
+          Before the agent makes its call, each campaign is scored for contextual
+          relevance: content genre match, time-of-day fit, viewer segment alignment.
+          These scores influence both the auction and the agent's final reasoning.
+        </div>
+      </div>
+
+      <div class="concept-card">
+        <div class="concept-icon">⚡</div>
+        <div class="concept-name">Pre-Computation for VOD</div>
+        <div class="concept-plain">"Run AI offline so delivery is instant"</div>
+        <div class="concept-desc">
+          For Video On Demand, context scores are pre-computed offline and cached.
+          When the viewer reaches an ad break, the decision is already ready —
+          no live AI latency in the playback path. Trade-off: speed over recency.
+        </div>
+      </div>
+
+      <div class="concept-card">
+        <div class="concept-icon">📈</div>
+        <div class="concept-name">Behavioral Session Intelligence</div>
+        <div class="concept-plain">"System adapts to how you watch, not just what you watch"</div>
+        <div class="concept-desc">
+          The binge frequency model reduces ad breaks as a session deepens (3→2→2→1
+          across episodes). Idle for 30+ minutes or a new login resets the count.
+          Ad load becomes a function of engagement — not a fixed schedule.
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Ad formats -->
+  <div class="section">
+    <div class="section-label">Three Ad Formats — All Decisioned by the Same Agent</div>
+    <div class="formats">
+      <div class="format-card">
+        <div class="format-icon">▶️</div>
+        <div class="format-name">Break Ads</div>
+        <div class="format-desc">
+          Mid-roll spots at scheduled breaks in a show. Non-skippable.
+          Full pipeline runs for each break. Frequency suppressed
+          intelligently as the viewer binge-watches.
+        </div>
+      </div>
+      <div class="format-card">
+        <div class="format-icon">⏸️</div>
+        <div class="format-name">Pause Ads</div>
+        <div class="format-desc">
+          Triggered 1.5s after the viewer pauses. Two sub-formats:
+          brand overlay (services, financial) or shoppable product
+          card (PLA) linking to a product detail page.
+        </div>
+      </div>
+      <div class="format-card">
+        <div class="format-icon">📺</div>
+        <div class="format-name">SSAI / DAI</div>
+        <div class="format-desc">
+          Server-Side Ad Insertion — ads are stitched into the video
+          stream before it reaches the viewer. Unskippable, seamless,
+          indistinguishable from content.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Value -->
+  <div class="section">
+    <div class="section-label">What This Demonstrates</div>
+    <div class="value-grid">
+      <div class="value-card">
+        <div class="value-num">1</div>
+        <div class="value-label">AI agent in the pipeline — Decision Agent only. All other steps are deterministic.</div>
+      </div>
+      <div class="value-card">
+        <div class="value-num">&lt;1s</div>
+        <div class="value-label">End-to-end pipeline latency — from ad opportunity detected to decision logged.</div>
+      </div>
+      <div class="value-card">
+        <div class="value-num">100%</div>
+        <div class="value-label">Decision auditability — every ad served has a full reasoning trace stored per impression.</div>
+      </div>
+      <div class="value-card">
+        <div class="value-num">3→1</div>
+        <div class="value-label">Ad break reduction across a binge session — load adapts to how long the viewer has been watching.</div>
+      </div>
+      <div class="value-card">
+        <div class="value-num">3</div>
+        <div class="value-label">Ad formats supported — break ads, pause ads, and server-side ad insertion (SSAI/DAI).</div>
+      </div>
+      <div class="value-card">
+        <div class="value-num">0→1</div>
+        <div class="value-label">Built end-to-end from scratch — auction engine, AI agent, compliance, tracking, and live dashboard.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PM decisions -->
+  <div class="section">
+    <div class="section-label">Key Product Decisions Made</div>
+    <div class="decisions">
+      <div class="decision-row">
+        <div class="dq">Why only one AI agent?</div>
+        <div class="da"><span>Inventory and compliance are deterministic rule checks — AI adds no value and introduces unpredictability. The Decision Agent is where context and reasoning actually matter: weighing auction results, content fit, and viewer signals simultaneously.</span></div>
+      </div>
+      <div class="decision-row">
+        <div class="dq">Why non-skippable ads?</div>
+        <div class="da"><span>Non-skippable ads are the norm in premium streaming — the trade-off for the viewer is fewer, shorter breaks. The trade-off for the platform is committing to that contract. Binge frequency reduction is what makes it sustainable across a long session.</span></div>
+      </div>
+      <div class="decision-row">
+        <div class="dq">Why second-price (Vickrey) auction?</div>
+        <div class="da"><span>Industry standard for programmatic advertising. Advertisers bid their true value without strategic underbidding. Transparent, fair, and maximizes long-term platform trust.</span></div>
+      </div>
+      <div class="decision-row">
+        <div class="dq">Why does the session break threshold matter?</div>
+        <div class="da"><span>30 minutes idle signals the viewer has left and returned — a new attention window justifies a full ad load reset. Anything shorter would punish viewers for brief interruptions. Anything longer loses revenue unnecessarily.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Closing callout -->
+  <div class="callout">
+    <strong>Built as a working system, not a slide deck.</strong>
+    Every product decision here — which steps use AI, which don't, how ad load adapts to viewer behavior,
+    how every decision gets logged with full reasoning — is implemented and running.
+    The goal: demonstrate what it looks like to think through an AI product end-to-end
+    and ship it, not just describe it.
+  </div>
+
+  <div class="footer">
+    Built by <strong>Anuj Wadhwa</strong> &nbsp;·&nbsp; Agentic Streaming TV Ad Platform &nbsp;·&nbsp; 2026
+  </div>
+
+</div>
+</body>
+</html>

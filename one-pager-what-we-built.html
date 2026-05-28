@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Agentic Streaming TV Ad Platform — What We Built</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #05080d; --panel: #0c1018; --border: #1c2535;
+    --green: #22c55e; --blue: #60a5fa; --purple: #a78bfa;
+    --amber: #f59e0b; --teal: #2dd4bf; --coral: #f97316;
+    --text: #e2e8f0; --muted: #64748b; --soft: #94a3b8;
+  }
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: 'Inter', -apple-system, sans-serif;
+    width: 210mm; min-height: 297mm;
+    padding: 0; margin: 0 auto;
+    font-size: 15px; line-height: 1.6;
+  }
+
+  /* ── TOP BAR ── */
+  .topbar {
+    background: linear-gradient(135deg, #0a1628 0%, #0d1f3c 50%, #0a1628 100%);
+    border-bottom: 1px solid rgba(96,165,250,0.2);
+    padding: 22px 40px 18px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .topbar-left { display: flex; flex-direction: column; gap: 4px; }
+  .topbar-eyebrow {
+    font-size: 9px; font-weight: 700; letter-spacing: 3px;
+    text-transform: uppercase; color: var(--blue); opacity: 0.8;
+  }
+  .topbar-title {
+    font-size: 22px; font-weight: 800; color: #fff; letter-spacing: -0.5px;
+    line-height: 1.1;
+  }
+  .topbar-title span { color: var(--green); }
+  .topbar-sub { font-size: 13px; color: var(--soft); margin-top: 2px; }
+  .topbar-badge {
+    background: rgba(34,197,94,0.12); border: 1px solid rgba(34,197,94,0.3);
+    color: var(--green); font-size: 10px; font-weight: 700;
+    letter-spacing: 1.2px; text-transform: uppercase;
+    padding: 5px 14px; border-radius: 99px;
+  }
+
+  /* ── BODY ── */
+  .body { padding: 28px 40px 24px; display: flex; flex-direction: column; gap: 20px; }
+
+  /* ── PROBLEM STATEMENT ── */
+  .problem {
+    background: linear-gradient(135deg, rgba(96,165,250,0.06), rgba(167,139,250,0.06));
+    border: 1px solid rgba(96,165,250,0.2); border-radius: 12px;
+    padding: 18px 22px;
+    display: flex; gap: 16px; align-items: flex-start;
+  }
+  .problem-icon { font-size: 28px; flex-shrink: 0; line-height: 1; }
+  .problem-text h3 {
+    font-size: 13px; font-weight: 700; color: var(--blue);
+    text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;
+  }
+  .problem-text p { font-size: 14px; color: var(--soft); line-height: 1.7; }
+  .problem-text strong { color: var(--text); font-weight: 600; }
+
+  /* ── METRICS ROW ── */
+  .metrics { display: grid; grid-template-columns: repeat(6,1fr); gap: 8px; }
+  .metric {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 10px; padding: 12px 10px; text-align: center;
+    border-top: 2px solid;
+  }
+  .metric.c-green  { border-top-color: var(--green); }
+  .metric.c-blue   { border-top-color: var(--blue); }
+  .metric.c-purple { border-top-color: var(--purple); }
+  .metric.c-amber  { border-top-color: var(--amber); }
+  .metric.c-teal   { border-top-color: var(--teal); }
+  .metric.c-coral  { border-top-color: var(--coral); }
+  .metric-val { font-size: 24px; font-weight: 800; color: #fff; line-height: 1; margin-bottom: 5px; }
+  .metric-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; font-weight: 500; }
+
+  /* ── TWO COL ── */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+  /* ── SECTION ── */
+  .section {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 12px; padding: 18px 20px;
+  }
+  .section-head {
+    font-size: 10px; font-weight: 700; letter-spacing: 1.8px;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 14px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section-head::after { content:''; flex:1; height:1px; background: var(--border); }
+
+  /* ── PIPELINE STEPS ── */
+  .pipeline { display: flex; flex-direction: column; gap: 8px; }
+  .pipe-step {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 8px 10px; border-radius: 8px; border: 1px solid;
+  }
+  .pipe-step.s1 { background: rgba(245,158,11,0.06); border-color: rgba(245,158,11,0.2); }
+  .pipe-step.s2 { background: rgba(96,165,250,0.06);  border-color: rgba(96,165,250,0.2); }
+  .pipe-step.s3 { background: rgba(96,165,250,0.06);  border-color: rgba(96,165,250,0.2); }
+  .pipe-step.s4 { background: rgba(45,212,191,0.06);  border-color: rgba(45,212,191,0.2); }
+  .pipe-step.s5 { background: rgba(167,139,250,0.08); border-color: rgba(167,139,250,0.3); }
+  .pipe-step.s6 { background: rgba(249,115,22,0.06);  border-color: rgba(249,115,22,0.2); }
+  .pipe-num {
+    width: 20px; height: 20px; border-radius: 50%;
+    font-size: 9px; font-weight: 800; display: flex; align-items: center;
+    justify-content: center; flex-shrink: 0; margin-top: 1px;
+    background: rgba(255,255,255,0.06); color: var(--soft);
+  }
+  .pipe-body { flex: 1; }
+  .pipe-name { font-size: 13px; font-weight: 700; color: #fff; margin-bottom: 3px; }
+  .pipe-desc { font-size: 12px; color: var(--soft); line-height: 1.55; }
+  .pipe-tag {
+    display: inline-flex; align-items: center;
+    margin-top: 4px; padding: 2px 8px; border-radius: 99px;
+    font-size: 9px; font-weight: 700; letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .tag-det  { background: rgba(96,165,250,0.1);  color: var(--blue);   border: 1px solid rgba(96,165,250,0.25); }
+  .tag-ai   { background: rgba(167,139,250,0.12); color: var(--purple); border: 1px solid rgba(167,139,250,0.3); }
+  .tag-iab  { background: rgba(45,212,191,0.1);  color: var(--teal);   border: 1px solid rgba(45,212,191,0.25); }
+  .tag-prot { background: rgba(245,158,11,0.1);  color: var(--amber);  border: 1px solid rgba(245,158,11,0.25); }
+
+  /* ── DECISIONS LIST ── */
+  .decisions { display: flex; flex-direction: column; gap: 9px; }
+  .decision-item { display: flex; gap: 10px; align-items: flex-start; }
+  .decision-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+  .decision-body {}
+  .decision-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+  .decision-desc { font-size: 12px; color: var(--soft); line-height: 1.6; }
+
+  /* ── TECH STACK ── */
+  .stack-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .stack-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 7px 10px; border-radius: 7px;
+    background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+  }
+  .stack-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+  .stack-name { font-size: 12px; font-weight: 600; color: var(--text); }
+  .stack-use  { font-size: 11px; color: var(--muted); margin-left: auto; }
+
+  /* ── AGENTIC CONCEPTS ── */
+  .concepts { display: flex; flex-direction: column; gap: 7px; }
+  .concept-row { display: flex; gap: 8px; align-items: flex-start; }
+  .concept-badge {
+    flex-shrink: 0; padding: 3px 10px; border-radius: 5px;
+    font-size: 10px; font-weight: 700; letter-spacing: 0.3px;
+    min-width: 118px; text-align: center;
+  }
+  .concept-text { font-size: 12px; color: var(--soft); line-height: 1.55; }
+  .concept-text strong { color: var(--text); }
+
+  /* ── FOOTER ── */
+  .footer {
+    padding: 14px 40px; border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .footer-left { font-size: 12px; color: var(--muted); }
+  .footer-left strong { color: var(--green); }
+  .footer-right { font-size: 11px; color: var(--muted); text-align: right; }
+
+  @media print {
+    body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .topbar { background: #0a1628 !important; }
+  }
+</style>
+<style>
+  .back-nav { padding: 10px 24px; background: #0d0d14; border-bottom: 1px solid rgba(255,255,255,0.07); }
+  .back-link { font-size: 12px; color: #6b7280; text-decoration: none; border: 1px solid rgba(255,255,255,0.07); border-radius: 5px; padding: 4px 12px; }
+  .back-link:hover { color: #f1f1f3; background: rgba(255,255,255,0.05); }
+</style>
+</head>
+<body>
+<div class="back-nav"><a href="index.html" class="back-link">← All Pages</a></div>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="topbar-eyebrow">Portfolio Project · Agentic AI</div>
+    <div class="topbar-title">Agentic <span>Streaming TV</span> Ad Platform</div>
+    <div class="topbar-sub">Real-time personalised ad delivery for streaming TV (CTV) · Break Ads · Pause Ads · Binge Intelligence · Built from scratch</div>
+  </div>
+  <div class="topbar-badge">What We Built</div>
+</div>
+
+<div class="body">
+
+  <!-- PROBLEM -->
+  <div class="problem">
+    <div class="problem-icon">📺</div>
+    <div class="problem-text">
+      <h3>The Problem</h3>
+      <p>A streaming platform must decide which ad each individual viewer sees — in <strong>under two seconds</strong>, across thousands of concurrent streams. The system handles three distinct ad formats: <strong>break ads</strong> (mid-content, non-skippable), <strong>pause ads</strong> (contextual Brand CTA or Sponsored Product Listing triggered on pause), and <strong>binge-aware frequency control</strong> (ad load tapers across consecutive episodes, resets on session break). Live TV runs on SCTE-35 broadcast cues; VOD on chapter-marker triggers. Both share the same AI decisioning pipeline — budget caps, compliance rules, frequency limits, and a Vickrey auction enforced per decision.</p>
+    </div>
+  </div>
+
+  <!-- METRICS -->
+  <div class="metrics">
+    <div class="metric c-green"><div class="metric-val">&lt;2s</div><div class="metric-label">End-to-End</div></div>
+    <div class="metric c-blue"><div class="metric-val">3</div><div class="metric-label">Ad Formats</div></div>
+    <div class="metric c-purple"><div class="metric-val">6</div><div class="metric-label">Viewers Simultaneous</div></div>
+    <div class="metric c-amber"><div class="metric-val">Multi</div><div class="metric-label">Advertiser Metadata</div></div>
+    <div class="metric c-teal"><div class="metric-val">2nd</div><div class="metric-label">Price Auction</div></div>
+    <div class="metric c-coral"><div class="metric-val">100%</div><div class="metric-label">Decisions Audited</div></div>
+  </div>
+
+  <!-- PIPELINE + DECISIONS -->
+  <div class="two-col">
+
+    <div class="section">
+      <div class="section-head">The Pipeline — 5 Steps in &lt;2 Seconds · Live TV + VOD</div>
+      <div class="pipeline">
+        <div class="pipe-step s1">
+          <div class="pipe-num">1</div>
+          <div class="pipe-body">
+            <div class="pipe-name">Ad Break Trigger</div>
+            <div class="pipe-desc"><strong style="color:#f59e0b">Live TV:</strong> SCTE-35 broadcast cue fires 6 seconds before the slot. <strong style="color:#60a5fa">VOD:</strong> Chapter-marker reached — DAI Scheduler pre-computes break pacing evenly across content duration.</div>
+            <div class="pipe-tag tag-prot">Dual-Mode</div>
+          </div>
+        </div>
+        <div class="pipe-step s2">
+          <div class="pipe-num">2</div>
+          <div class="pipe-body">
+            <div class="pipe-name">Inventory Filter</div>
+            <div class="pipe-desc">Eliminates campaigns by budget remaining, audience segment, content category, and geographic constraints.</div>
+            <div class="pipe-tag tag-det">Rule Engine</div>
+          </div>
+        </div>
+        <div class="pipe-step s3">
+          <div class="pipe-num">3</div>
+          <div class="pipe-body">
+            <div class="pipe-name">Compliance Check</div>
+            <div class="pipe-desc">Enforces hourly/daily frequency caps and competitive separation rules. Every rejection logged with exact rule fired.</div>
+            <div class="pipe-tag tag-det">Rule Engine</div>
+          </div>
+        </div>
+        <div class="pipe-step s4">
+          <div class="pipe-num">4</div>
+          <div class="pipe-body">
+            <div class="pipe-name">Vickrey Auction</div>
+            <div class="pipe-desc">Second-price auction — winner pays the second-highest bid. Floor CPMs and daypart multipliers from database at runtime.</div>
+            <div class="pipe-tag tag-det">Rule Engine</div>
+          </div>
+        </div>
+        <div class="pipe-step s5">
+          <div class="pipe-num">5</div>
+          <div class="pipe-body">
+            <div class="pipe-name">Claude Sonnet Decision</div>
+            <div class="pipe-desc">Only LLM in the pipeline. Reviews winner, writes full chain-of-thought reasoning to audit log per break.</div>
+            <div class="pipe-tag tag-ai">Claude Sonnet 4.6</div>
+          </div>
+        </div>
+        <div class="pipe-step s6">
+          <div class="pipe-num">6</div>
+          <div class="pipe-body">
+            <div class="pipe-name">Ad Delivery + Impression Tracking</div>
+            <div class="pipe-desc">7 IAB tracking events per impression. Each viewer receives a personalised, seamlessly stitched stream — ad insertion is invisible to the player.</div>
+            <div class="pipe-tag tag-iab">IAB VAST 3.0</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:14px">
+
+      <div class="section">
+        <div class="section-head">Key Design Decisions</div>
+        <div class="decisions">
+          <div class="decision-item">
+            <div class="decision-icon">⚡</div>
+            <div class="decision-body">
+              <div class="decision-title">Deterministic code over LLMs for rules</div>
+              <div class="decision-desc">Inventory, compliance, and tracking are structured rule evaluation — fast, testable, no LLM cost. Claude only where judgment is needed.</div>
+            </div>
+          </div>
+          <div class="decision-item">
+            <div class="decision-icon">⚖️</div>
+            <div class="decision-body">
+              <div class="decision-title">Second-price (Vickrey) auction</div>
+              <div class="decision-desc">Dominant strategy: bid your true value. Eliminates bid-shading, produces efficient and stable prices. Industry standard for programmatic CTV.</div>
+            </div>
+          </div>
+          <div class="decision-item">
+            <div class="decision-icon">🔄</div>
+            <div class="decision-body">
+              <div class="decision-title">8-state state machine</div>
+              <div class="decision-desc">Agents propose, state machine validates. Concurrent events and partial failures can't corrupt system state.</div>
+            </div>
+          </div>
+          <div class="decision-item">
+            <div class="decision-icon">📝</div>
+            <div class="decision-body">
+              <div class="decision-title">Full audit trail on every decision</div>
+              <div class="decision-desc">Claude's complete chain-of-thought stored per break. Every ad decision queryable, explainable, and accountable.</div>
+            </div>
+          </div>
+          <div class="decision-item">
+            <div class="decision-icon">🎬</div>
+            <div class="decision-body">
+              <div class="decision-title">One engine, two content modes</div>
+              <div class="decision-desc">Same decisioning pipeline serves both live TV (SCTE-35) and VOD (chapter markers). VOD unlocks richer personalisation — the platform knows exactly what content the viewer chose.</div>
+            </div>
+          </div>
+          <div class="decision-item">
+            <div class="decision-icon">⏸️</div>
+            <div class="decision-body">
+              <div class="decision-title">Pause ads in two formats</div>
+              <div class="decision-desc">When a viewer pauses, a contextual ad appears after 1.5s. Brand CTA (app/web conversion) for service advertisers; Sponsored Product Listing (single product + Shop CTA) for product advertisers. Format is campaign-driven, not random.</div>
+            </div>
+          </div>
+          <div class="decision-item">
+            <div class="decision-icon">📈</div>
+            <div class="decision-body">
+              <div class="decision-title">Binge frequency intelligence</div>
+              <div class="decision-desc">Ad load tapers across consecutive episodes: 3 breaks → 2 → 2 → 1, then resets. Session break detection (30m idle or new login) restores full load. Suppressed breaks are marked in the timeline — viewers see fewer ads, not a broken experience.</div>
+            </div>
+          </div>
+          <div class="decision-item">
+            <div class="decision-icon">⚙️</div>
+            <div class="decision-body">
+              <div class="decision-title">Zero hardcoded settings</div>
+              <div class="decision-desc">Floor CPM, daypart multipliers, frequency caps all read from database at runtime. Operators tune without code deploys.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-head">Agentic AI Concepts Demonstrated</div>
+        <div class="concepts">
+          <div class="concept-row">
+            <div class="concept-badge" style="background:rgba(167,139,250,0.12);color:#a78bfa;border:1px solid rgba(167,139,250,0.3)">Orchestration</div>
+            <div class="concept-text"><strong>Central orchestrator</strong> coordinates all pipeline steps, manages context, sequences decisions</div>
+          </div>
+          <div class="concept-row">
+            <div class="concept-badge" style="background:rgba(96,165,250,0.1);color:#60a5fa;border:1px solid rgba(96,165,250,0.25)">Hybrid Pipeline</div>
+            <div class="concept-text">Rule engines for structured logic, AI only for judgment — each tool where it adds real value</div>
+          </div>
+          <div class="concept-row">
+            <div class="concept-badge" style="background:rgba(34,197,94,0.1);color:#22c55e;border:1px solid rgba(34,197,94,0.25)">Auditable AI</div>
+            <div class="concept-text">Full reasoning trace stored per decision — every AI call is explainable, not a black box</div>
+          </div>
+          <div class="concept-row">
+            <div class="concept-badge" style="background:rgba(245,158,11,0.1);color:#f59e0b;border:1px solid rgba(245,158,11,0.25)">State Machine</div>
+            <div class="concept-text">State machine prevents invalid transitions — agents propose, machine validates</div>
+          </div>
+          <div class="concept-row">
+            <div class="concept-badge" style="background:rgba(45,212,191,0.1);color:#2dd4bf;border:1px solid rgba(45,212,191,0.25)">Graceful Fallback</div>
+            <div class="concept-text">Claude failure auto-confirms auction winner — pipeline never hard-stops</div>
+          </div>
+          <div class="concept-row">
+            <div class="concept-badge" style="background:rgba(249,115,22,0.1);color:#f97316;border:1px solid rgba(249,115,22,0.25)">Session Intelligence</div>
+            <div class="concept-text"><strong>Binge tracking</strong> adapts ad load across episodes — detects continuous viewing vs session breaks without explicit user input</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KEY TECHNOLOGIES -->
+  <div class="section">
+    <div class="section-head">Key Technologies &amp; Standards</div>
+    <div class="stack-grid">
+      <div class="stack-item"><div class="stack-dot" style="background:#a78bfa"></div><div class="stack-name">Claude Sonnet 4.6</div><div class="stack-use">AI decision agent</div></div>
+      <div class="stack-item"><div class="stack-dot" style="background:#f59e0b"></div><div class="stack-name">SCTE-35 + VOD Chapter Markers</div><div class="stack-use">Live &amp; on-demand ad triggers</div></div>
+      <div class="stack-item"><div class="stack-dot" style="background:#2dd4bf"></div><div class="stack-name">Supabase</div><div class="stack-use">Campaigns · audit trail · settings</div></div>
+      <div class="stack-item"><div class="stack-dot" style="background:#f97316"></div><div class="stack-name">IAB VAST 3.0</div><div class="stack-use">7-event impression tracking</div></div>
+      <div class="stack-item"><div class="stack-dot" style="background:#60a5fa"></div><div class="stack-name">HLS Streaming · SSAI</div><div class="stack-use">Server-stitched per-viewer delivery</div></div>
+      <div class="stack-item"><div class="stack-dot" style="background:#f472b6"></div><div class="stack-name">Vickrey Auction Engine</div><div class="stack-use">Second-price · daypart multipliers</div></div>
+      <div class="stack-item"><div class="stack-dot" style="background:#22c55e"></div><div class="stack-name">8-State State Machine</div><div class="stack-use">Safe pipeline transitions</div></div>
+      <div class="stack-item"><div class="stack-dot" style="background:#94a3b8"></div><div class="stack-name">Railway</div><div class="stack-use">Cloud deployment · production hosting</div></div>
+      <div class="stack-item"><div class="stack-dot" style="background:#f97316"></div><div class="stack-name">Pause Ad Engine</div><div class="stack-use">Brand CTA + Sponsored PLA · 1.5s delay</div></div>
+      <div class="stack-item"><div class="stack-dot" style="background:#a855f7"></div><div class="stack-name">Binge Session Tracker</div><div class="stack-use">4-ep cycle · session break detection</div></div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <div class="footer-left">Built by <strong>Anuj Wadhwa</strong> — Product Manager who builds things</div>
+  <div class="footer-right">Agentic Streaming TV Ad Platform · CTV · 2026</div>
+</div>
+
+</body>
+</html>
